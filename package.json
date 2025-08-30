@@ -1,8 +1,12 @@
 {
-"name": "meal-campaign",
-"version": "1.0.0",
-"private": true,
-"dependencies": {
-"stripe": "^12.0.0"
-}
+  "name": "help-animal-ruby",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "stripe": "^12.0.0"
+  }
 }
