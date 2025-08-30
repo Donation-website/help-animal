@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 
-// A Secret key-t a Vercel Environment Variables-ben állítottuk be
+// A Vercelben kell beállítanod:
+// STRIPE_SECRET_KEY = sk_live_.... (a saját Secret Key-d)
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export default async function handler(req, res) {
@@ -11,29 +12,33 @@ export default async function handler(req, res) {
 
   try {
     const { amount } = req.body;
-    if (![1,2,5].includes(amount)) {
+
+    // csak 1, 2 vagy 5 euró engedélyezett
+    if (![1, 2, 5].includes(amount)) {
       return res.status(400).json({ error: "Invalid amount" });
     }
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      line_items: [{
-        price_data: {
-          currency: "eur",
-          product_data: { name: `${amount}€ Donation` },
-          unit_amount: amount * 100,
+      line_items: [
+        {
+          price_data: {
+            currency: "eur",
+            product_data: { name: `${amount}€ Donation to Help Animals` },
+            unit_amount: amount * 100,
+          },
+          quantity: 1,
         },
-        quantity: 1,
-      }],
+      ],
       mode: "payment",
-      success_url: "https://donate-meals-2dn4mbchg-donation-websites-projects.vercel.app/success.html",
-      cancel_url: "https://donate-meals-2dn4mbchg-donation-websites-projects.vercel.app/cancel.html",
-      locale: "en"
+      success_url: "https://help-animal-ruby.vercel.app/success",
+      cancel_url: "https://help-animal-ruby.vercel.app/cancel",
+      locale: "en",
     });
 
     res.status(200).json({ id: session.id });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Server error", message: err.message });
+    console.error("Stripe error:", err);
+    res.status(500).json({ error: "Server error" });
   }
 }
