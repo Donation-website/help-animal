@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Donate to Support Animal Shelters – Help Pets in Need</title>
+  <meta name="description" content="Help save and support animals in shelters worldwide. Donate 1€, 2€, or 5€ to provide food, care, and love for pets in need. Your contribution makes a difference.">
+  <meta name="keywords" content="
+animal shelter, donate, pets, rescue, save animals, pet care, charity, help animals,
+tierschutz, spenden, tierschutzverein, rettung, haustiere helfen, wohltätigkeit,
+shelter, donazione, animali, rifugio, soccorso, beneficenza, nutrire animali,
+állatmenhely, adomány, állatok, mentés, gondoskodás, jótékonyság
+">
+  <meta name="author" content="Animal Shelter Support Campaign">
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    body {
+      margin:0;
+      padding:0;
+      font-family: Arial, sans-serif;
+      background: url("/background.jpg") no-repeat center center/cover;
+      color:#000;
+      text-align:center;
+    }
+    .overlay {
+      background: rgba(255, 255, 255, 0.45); /* átlátszó, így látszik a háttér */
+      padding: 40px;
+      border-radius:12px;
+      margin:60px auto;
+      max-width:640px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2); /* finom árnyék az overlay körül */
+    }
+    h1 {
+      font-size:2.2em;
+      margin-bottom:20px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.5); /* szöveg kiemelés */
+    }
+    p {
+      font-size:1.1em;
+      margin-bottom:25px;
+      line-height:1.4;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3); /* szöveg kiemelés */
+    }
+    .donate-buttons { margin:20px 0; }
+    button {
+      background:#ff9800;
+      border:none;
+      padding:14px 28px;
+      margin:8px;
+      font-size:18px;
+      color:white;
+      cursor:pointer;
+      border-radius:8px;
+      font-weight:bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+    button:hover { background:#e68900; }
+    .footer {
+      margin-top:40px;
+      font-size:0.9em;
+      color:#333;
+      text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <h1>Support Animal Shelters 🐾</h1>
+    <p>
+      Millions of pets are waiting in shelters for love and care.<br>
+      Your donation of 1 €, 2 €, or 5 € can provide food, medical care, and a safe home for animals in need.<br>
+      Help fight animal suffering and support shelter initiatives worldwide.
+    </p>
+
+    <div class="donate-buttons">
+      <button onclick="donate(1)">Donate 1 €</button>
+      <button onclick="donate(2)">Donate 2 €</button>
+      <button onclick="donate(5)">Donate 5 €</button>
+    </div>
+
+    <p><strong>Already helped <span id="meals-count">4,357</span> animals</strong><br>
+       Donations go directly to animal shelters and rescue organizations</p>
+
+    <div class="footer">© 2025 Animal Shelter Support Campaign. All rights reserved.</div>
+  </div>
+
+  <script>
+    // Ide másold a saját Stripe Publishable Key-edet
+    const stripe = Stripe("pk_live_51S0zyXDyLtejYlZixEqmlIwnOSQ4yxGGvR2i5eulXNtmKnpeAIgXETXm3FNm8E4XSgeSnyeWboG5CHWJnLccnagx004MPoq1n1");
+
+    async function donate(amount) {
+      const resp = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount })
+      });
+      const data = await resp.json();
+      stripe.redirectToCheckout({ sessionId: data.id });
+    }
+  </script>
+</body>
+</html>
