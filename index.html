@@ -65,6 +65,30 @@ shelter, donazione, animali, rifugio, soccorso, beneficenza, nutrire animali,
       color:#333;
       text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
     }
+    /* Accordion style */
+    details {
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(255,255,255,0.7);
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: left;
+      cursor: pointer;
+    }
+    summary {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #333;
+      outline: none;
+    }
+    details[open] {
+      background: rgba(255,255,255,0.9);
+    }
+    details p {
+      margin: 10px 0 0;
+      line-height: 1.5;
+      color: #000;
+    }
   </style>
 </head>
 <body>
@@ -84,6 +108,32 @@ shelter, donazione, animali, rifugio, soccorso, beneficenza, nutrire animali,
 
     <p><strong>Already helped <span id="meals-count">4,357</span> animals</strong><br>
        Donations go directly to animal shelters and rescue organizations</p>
+
+    <!-- Accordion blocks -->
+    <details>
+      <summary>About Our Mission 🐶🐱</summary>
+      <p>Since 2017, we have been rescuing and protecting animals of all kinds – from small pets to large wildlife projects. Our global network of more than <strong>5,000 volunteers</strong> provides food, shelter, and medical care.</p>
+      <p>One of our proudest moments was saving <strong>Bubba, a 45-year-old elephant</strong> in India. Neglected by his previous owners, Bubba was rescued by our team and relocated to a safe sanctuary where he now lives happily and freely.</p>
+      <p>Every donation directly supports missions like Bubba’s, helping us provide hope and a second chance to animals worldwide.</p>
+    </details>
+
+    <details>
+      <summary>How We Use Donations 💝</summary>
+      <p>Transparency is at the heart of what we do. Every euro you give is carefully directed:</p>
+      <p>🐾 50% provides daily food and shelter for animals.<br>
+         🏥 30% covers veterinary treatments, vaccinations, and emergency care.<br>
+         🌍 20% supports international rescue missions and long-term projects.</p>
+      <p>Your kindness makes real change possible – from feeding abandoned puppies to funding large-scale rescues across the globe.</p>
+    </details>
+
+    <details>
+      <summary>Trust & Security 🔒</summary>
+      <p>Your safety is our priority. This website is hosted on <strong>Vercel</strong>, a secure platform with strict policies ensuring that all campaigns follow reliable standards.</p>
+      <p>✔️ Secure payment via <strong>Stripe</strong> – one of the world’s most trusted payment providers.<br>
+         ✔️ Full SSL encryption – your data and transactions are always protected.<br>
+         ✔️ Verified campaigns – strict rules ensure transparency and trustworthiness.</p>
+      <p>When you support us, you can be confident that your contribution is handled with care and integrity.</p>
+    </details>
 
     <div class="footer">© 2025 Animal Shelter Support Campaign. All rights reserved.</div>
   </div>
