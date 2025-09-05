@@ -4,9 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Donate to Support Animal Shelters – Help Pets in Need</title>
-  <meta name="description" content="Help save and support animals in shelters worldwide. Donate 1€, 2€, or 5€ to provide food, care, and love for pets in need. Your contribution makes a difference.">
-  <meta name="keywords" content="animal shelter, donate, pets, rescue, save animals, pet care, charity, help animals">
+  <meta name="description" content="Help save and support animals in shelters worldwide. Donate 1€, 2€, 5€, or any amount to provide food, care, and love for pets in need. Your contribution makes a difference.">
+  <meta name="keywords" content="
+animal shelter, donate, pets, rescue, save animals, pet care, charity, help animals,
+tierschutz, spenden, tierschutzverein, rettung, haustiere helfen, wohltätigkeit,
+shelter, donazione, animali, rifugio, soccorso, beneficenza, nutrire animali,
+állatmenhely, adomány, állatok, mentés, gondoskodás, jótékonyság
+">
   <meta name="author" content="Animal Shelter Support Campaign">
+
   <script src="https://js.stripe.com/v3/"></script>
   <style>
     body {
@@ -25,36 +31,68 @@
       max-width:640px;
       box-shadow: 0 0 20px rgba(0,0,0,0.2);
     }
-    h1 { font-size:2.2em; margin-bottom:20px; }
-    p { font-size:1.1em; margin-bottom:25px; line-height:1.4; }
+    h1 {
+      font-size:2.2em;
+      margin-bottom:20px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    }
+    p {
+      font-size:1.1em;
+      margin-bottom:25px;
+      line-height:1.4;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
     .donate-buttons { margin:20px 0; }
     button {
-      background:#ff9800; border:none; padding:14px 28px; margin:8px;
-      font-size:18px; color:white; cursor:pointer; border-radius:8px; font-weight:bold;
+      background:#ff9800;
+      border:none;
+      padding:14px 28px;
+      margin:8px;
+      font-size:18px;
+      color:white;
+      cursor:pointer;
+      border-radius:8px;
+      font-weight:bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
     }
     button:hover { background:#e68900; }
-    .footer { margin-top:40px; font-size:0.9em; color:#333; }
-    .logo {
-      position: absolute;
-      top: 15px;
-      left: 15px;
+    .donate-any {
+      margin-top: 18px;
     }
-    .logo img {
-      width: 120px;
-      height: auto;
+    .donate-any input {
+      padding:10px;
+      font-size:16px;
+      border:1px solid #ccc;
+      border-radius:6px;
+      width:120px;
+      text-align:right;
+      margin-right:10px;
+    }
+    .share-buttons {
+      margin-top: 14px;
+      font-size: 0.98em;
+      font-weight: bold;
+    }
+    .share-buttons a {
+      margin: 0 8px;
+      text-decoration: none;
+      font-weight: normal;
+    }
+    .share-buttons a:hover { text-decoration: underline; }
+    .footer {
+      margin-top:30px;
+      font-size:0.9em;
+      color:#333;
+      text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
     }
   </style>
 </head>
 <body>
-  <div class="logo">
-    <img src="logo-animals.png" alt="Donation Website - Animals Logo">
-  </div>
-
   <div class="overlay">
     <h1>Support Animal Shelters 🐾</h1>
     <p>
       Millions of pets are waiting in shelters for love and care.<br>
-      Your donation of 1 €, 2 €, or 5 € can provide food, medical care, and a safe home for animals in need.<br>
+      Your donation of 1 €, 2 €, 5 €, or any amount can provide food, medical care, and a safe home for animals in need.<br>
       Help fight animal suffering and support shelter initiatives worldwide.
     </p>
 
@@ -64,8 +102,21 @@
       <button onclick="donate(5)">Donate 5 €</button>
     </div>
 
+    <div class="donate-any">
+      <input type="number" id="customAmount" placeholder="Enter amount €" min="1" />
+      <button onclick="donateCustom()">Donate Any Amount</button>
+    </div>
+
     <p><strong>Already helped <span id="meals-count">4,357</span> animals</strong><br>
        Donations go directly to animal shelters and rescue organizations</p>
+
+    <div class="share-buttons">
+      <span>Share ❤️:</span>
+      <a id="share-fb" href="#" target="_blank">🌐 Facebook</a>
+      <a id="share-x" href="#" target="_blank">🐦 X</a>
+      <a id="share-ig" href="https://www.instagram.com/" target="_blank">📸 Instagram</a>
+      <a id="share-mail" href="#" target="_blank">✉️ Email</a>
+    </div>
 
     <div class="footer">© 2025 Animal Shelter Support Campaign. All rights reserved.</div>
   </div>
@@ -82,6 +133,24 @@
       const data = await resp.json();
       stripe.redirectToCheckout({ sessionId: data.id });
     }
+
+    async function donateCustom() {
+      const val = document.getElementById("customAmount").value;
+      if (!val || val < 1) {
+        alert("Please enter a valid amount.");
+        return;
+      }
+      donate(Number(val));
+    }
+
+    // Share links auto-fill
+    (function initShare() {
+      const url = encodeURIComponent(window.location.href);
+      const text = encodeURIComponent("Support animal shelters and help pets in need.");
+      document.getElementById("share-fb").href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+      document.getElementById("share-x").href  = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+      document.getElementById("share-mail").href = `mailto:?subject=Support%20Animals&body=${text}%20%0A${url}`;
+    })();
   </script>
 </body>
 </html>
