@@ -7,12 +7,12 @@
 
   <meta name="description" content="Help save and support animals in shelters worldwide. Donate a small amount to provide food, care and shelter. Secure payments via Stripe.">
 
-  <!-- Keywords: includes 'news' in many languages + globally top searched terms -->
+  <!-- Keywords include 'news' in multiple languages + common high-traffic terms -->
   <meta name="keywords" content="
     animal shelter, donate, pets, rescue, save animals, pet care, charity, help animals,
     news, hírek, noticias, nouvelles, notizie, notícias, Nachrichten, nieuws, nyheter, wiadomości, zprávy, новости, أخبار, ニュース, 新闻, 新聞,
     YouTube, Google, Facebook, Amazon, Weather, Gmail, ChatGPT, Instagram, Netflix, WhatsApp, TikTok,
-    動画, 天気, 天气, météo, nieuws, notizie, noticias, hírek
+    動画, 天気, 天气, météo
   ">
 
   <meta name="author" content="Animal Shelter Support Campaign">
@@ -20,7 +20,7 @@
   <style>
     :root{
       --accent:#ff7a00;
-      --overlay: rgba(255,255,255,0.78); /* halvány áttetsző háttér */
+      --overlay: rgba(255,255,255,0.78);
       --radius:12px;
       --max-width:980px;
     }
@@ -29,7 +29,7 @@
     body{
       background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.12)), url("/background.jpg") center/cover no-repeat fixed;
       display:flex;
-      align-items:center;
+      align-items:flex-start; /* top */
       justify-content:center;
       padding:28px;
       color:#111;
@@ -42,10 +42,16 @@
       border-radius:var(--radius);
       padding:26px;
       box-shadow:0 20px 40px rgba(0,0,0,0.12);
+      margin-top:20px;
     }
 
-    h1{margin:0 0 10px; font-size:1.6rem;}
-    p.lead{margin:0 0 18px; line-height:1.45; font-size:1rem; color:#222;}
+    /* Top-centered header (exact three lines, centered) */
+    .hero {
+      text-align:center;
+      margin-bottom:14px;
+    }
+    .hero h1 {margin:0; font-size:1.4rem; font-weight:800;}
+    .hero p {margin:6px 0; font-size:1rem; color:#222;}
 
     .donate-row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:18px 0;}
     .btn{
@@ -58,6 +64,7 @@
       cursor:pointer;
       box-shadow:0 8px 18px rgba(0,0,0,0.12);
     }
+    .btn:disabled{opacity:.6; cursor:not-allowed;}
     .btn:hover{filter:brightness(.95)}
 
     .custom {
@@ -75,7 +82,6 @@
       font-size:1rem;
       text-align:right;
     }
-
     .stats{
       text-align:center;
       margin-top:18px;
@@ -90,8 +96,17 @@
     .share {text-align:center; margin-top:18px;}
     .share a{margin:0 8px; text-decoration:none; font-weight:700; color:#333;}
 
+    /* notification */
+    .notice {
+      text-align:center;
+      margin-top:10px;
+      color:#b33;
+      font-weight:600;
+      display:none;
+    }
+
     @media (max-width:640px){
-      h1{font-size:1.3rem}
+      .hero h1{font-size:1.2rem}
       .donate-row{gap:8px}
       .custom input{width:100px}
     }
@@ -101,18 +116,19 @@
 </head>
 <body>
   <main class="container" role="main" aria-labelledby="title">
-    <h1 id="title">Support Animal Shelters 🐾</h1>
+    <!-- TOP CENTER: exact text you requested, centered -->
+    <div class="hero" aria-hidden="false">
+      <h1>Support Animal Shelters 🐾</h1>
+      <p>Millions of pets are waiting in shelters for food, care and a safe home.</p>
+      <p>Your small gift (1 €, 2 €, 5 €, 10 € or any amount) helps provide meals, veterinary care and shelter.</p>
+    </div>
 
-    <p class="lead">
-      Millions of pets are waiting in shelters for food, care and a safe home.<br>
-      Your small gift (1 €, 2 €, 5 €, 10 € or any amount) helps provide meals, veterinary care and shelter.
-    </p>
-
+    <!-- Donation buttons -->
     <div class="donate-row" role="group" aria-label="Donation buttons">
-      <button class="btn" onclick="donate(1)">Donate 1 €</button>
-      <button class="btn" onclick="donate(2)">Donate 2 €</button>
-      <button class="btn" onclick="donate(5)">Donate 5 €</button>
-      <button class="btn" onclick="donate(10)">Donate 10 €</button>
+      <button id="btn1" class="btn" onclick="donate(1)">Donate 1 €</button>
+      <button id="btn2" class="btn" onclick="donate(2)">Donate 2 €</button>
+      <button id="btn5" class="btn" onclick="donate(5)">Donate 5 €</button>
+      <button id="btn10" class="btn" onclick="donate(10)">Donate 10 €</button>
     </div>
 
     <div class="custom" aria-label="Custom donation">
@@ -128,7 +144,7 @@
     <details>
       <summary>About Our Mission</summary>
       <div>
-        <p>Since 2017 we rescue and protect animals of all kinds — from small pets to large wildlife projects. Our global network of more than <strong>5,000 volunteers</strong> provides food, shelter and medical care.</p>
+        <p>Since 2017 we rescue and protect animals of all kinds — from small pets to large wildlife projects. Our global network of more than <strong>5,000 volunteers</strong> provides food, shelter, and medical care.</p>
         <p>One of our proudest rescues was <strong>Bubba, a 45-year-old elephant</strong> in India. Neglected by previous owners, Bubba was rescued by our team and relocated to a safe sanctuary where he now lives more comfortably.</p>
       </div>
     </details>
@@ -147,6 +163,8 @@
       </div>
     </details>
 
+    <div id="notice" class="notice" role="alert"></div>
+
     <div class="share" aria-label="Share this page">
       <span>Share ❤️:</span>
       <a id="share-fb" target="_blank" rel="noopener noreferrer">Facebook</a>
@@ -159,31 +177,92 @@
   </main>
 
   <script>
-    (function initShare(){
-      const url = encodeURIComponent(window.location.href);
-      const text = encodeURIComponent("Support animal shelters and help pets in need.");
-      document.getElementById('share-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-      document.getElementById('share-x').href = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
-      document.getElementById('share-wa').href = `https://api.whatsapp.com/send?text=${text}%20${url}`;
-      document.getElementById('share-mail').href = `mailto:?subject=Support%20Animals&body=${text}%0A${url}`;
-    })();
+    /***************************************************************
+     * IMPORTANT:
+     * If your existing server endpoint /api/create-checkout-session
+     * works and returns JSON { id: "<stripe_session_id>" }, the code
+     * will redirect to Stripe Checkout automatically.
+     *
+     * If that endpoint is missing or fails, you can use a fallback
+     * payment link (Stripe Payment Link or PayPal link). To do that:
+     *  1) Create a Stripe Payment Link in your Stripe Dashboard OR a PayPal.me link.
+     *  2) Paste the full URL below as the FALLBACK_PAYMENT_LINK value.
+     *     - If the link supports an amount placeholder, you can include "{AMOUNT}" and it will be replaced.
+     *     - If not, the code will append "?amount=XX" to the URL (many services ignore the param).
+     *
+     * Example:
+     *   const FALLBACK_PAYMENT_LINK = "https://buy.stripe.com/test_abc123";  // replace with real link
+     ***************************************************************/
 
+    const FALLBACK_PAYMENT_LINK = ""; // <-- PUT your Stripe Payment Link or PayPal.me URL here if you want instant fallback
+
+    // Publishable key (kept from your previous code)
     const stripe = Stripe("pk_live_51S0zyXDyLtejYlZixEqmlIwnOSQ4yxGGvR2i5eulXNtmKnpeAIgXETXm3FNm8E4XSgeSnyeWboG5CHWJnLccnagx004MPoq1n1");
 
+    function showNotice(msg){
+      const n = document.getElementById('notice');
+      if(!n) return;
+      n.style.display = 'block';
+      n.textContent = msg;
+    }
+
     async function donate(amount){
+      // disable buttons temporarily
+      toggleButtons(true);
       try{
         const resp = await fetch("/api/create-checkout-session", {
           method: "POST",
           headers: {"Content-Type":"application/json"},
           body: JSON.stringify({ amount: Number(amount) })
         });
-        if(!resp.ok) throw new Error('server');
-        const d = await resp.json();
-        if(d && d.id) await stripe.redirectToCheckout({ sessionId: d.id });
-        else alert('There was an error creating the checkout session.');
-      }catch(e){
-        console.error(e);
-        alert('Error: could not create donation. Please try again later.');
+
+        // If server responded OK and returned JSON with id => use it
+        if(resp.ok){
+          try{
+            const data = await resp.json();
+            if(data && data.id){
+              await stripe.redirectToCheckout({ sessionId: data.id });
+              return; // should redirect
+            }else{
+              console.warn("No session id in response", data);
+            }
+          }catch(parseErr){
+            console.warn("Failed to parse JSON from /api/create-checkout-session", parseErr);
+          }
+        } else {
+          console.warn("Server returned non-OK status for /api/create-checkout-session", resp.status);
+        }
+
+        // FALLBACK: if we have a static payment link, redirect there
+        if(FALLBACK_PAYMENT_LINK && FALLBACK_PAYMENT_LINK.length){
+          let url;
+          if(FALLBACK_PAYMENT_LINK.includes("{AMOUNT}")){
+            url = FALLBACK_PAYMENT_LINK.replace("{AMOUNT}", encodeURIComponent(amount));
+          } else {
+            url = FALLBACK_PAYMENT_LINK + (FALLBACK_PAYMENT_LINK.includes('?') ? '&' : '?') + 'amount=' + encodeURIComponent(amount);
+          }
+          window.location.href = url;
+          return;
+        }
+
+        // No fallback configured — inform admin / user
+        showNotice("Hiba: nem sikerült létrehozni a fizetési munkamenetet és nincs fallback link beállítva. Kérjük ellenőrizd az /api/create-checkout-session endpontot vagy add meg a FALLBACK_PAYMENT_LINK-et.");
+      }catch(err){
+        console.error("Donation error", err);
+        if(FALLBACK_PAYMENT_LINK && FALLBACK_PAYMENT_LINK.length){
+          // attempt fallback redirect
+          let url;
+          if(FALLBACK_PAYMENT_LINK.includes("{AMOUNT}")){
+            url = FALLBACK_PAYMENT_LINK.replace("{AMOUNT}", encodeURIComponent(amount));
+          } else {
+            url = FALLBACK_PAYMENT_LINK + (FALLBACK_PAYMENT_LINK.includes('?') ? '&' : '?') + 'amount=' + encodeURIComponent(amount);
+          }
+          window.location.href = url;
+          return;
+        }
+        showNotice("Hiba a fizetési kérésben. Kérjük ellenőrizd a szervernaplókat és a /api/create-checkout-session endpontot.");
+      } finally {
+        toggleButtons(false);
       }
     }
 
@@ -193,7 +272,33 @@
       donate(v);
     }
 
+    function toggleButtons(disabled){
+      document.querySelectorAll('.btn').forEach(b=> b.disabled = disabled);
+    }
+
+    // share links init
+    (function initShare(){
+      const url = encodeURIComponent(window.location.href);
+      const text = encodeURIComponent("Support animal shelters and help pets in need.");
+      document.getElementById('share-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+      document.getElementById('share-x').href = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+      document.getElementById('share-wa').href = `https://api.whatsapp.com/send?text=${text}%20${url}`;
+      document.getElementById('share-mail').href = `mailto:?subject=Support%20Animals&body=${text}%0A${url}`;
+    })();
+
+    // small animation for stats (optional cosmetic)
     function animateId(id, endVal){
       const el = document.getElementById(id);
       if(!el) return;
-      const start = Number(el.textContent.replace(/
+      const start = Number(el.textContent.replace(/[^0-9]/g,'')) || 0;
+      const dur = 700; const s = performance.now();
+      requestAnimationFrame(function fn(t){
+        const p = Math.min(1,(t-s)/dur);
+        el.textContent = Math.round(start + (endVal-start)*p).toLocaleString();
+        if(p<1) requestAnimationFrame(fn);
+      });
+    }
+    animateId('donors',12500); animateId('projects',37); animateId('animals',4357);
+  </script>
+</body>
+</html>
