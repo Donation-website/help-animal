@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Támogasd az állatmenhelyeket – Segíts az állatoknak</title>
+
+  <meta name="description" content="Segíts az állatmenhelyeknek világszerte. Már 1 € adomány is élelmet, orvosi ellátást és biztonságot nyújt a rászoruló állatoknak. Biztonságos fizetés Stripe-on keresztül.">
+
+  <meta name="keywords" content="
+    állatmenhely, adomány, állatvédelem, kutya, cica, mentés, segítség, jótékonyság,
+    news, hírek, noticias, nouvelles, notizie, notícias, Nachrichten, nieuws, nyheter, wiadomości, zprávy, новости, ニュース, 新闻, 新聞,
+    YouTube, Google, Facebook, Amazon, Weather, Gmail, ChatGPT, Instagram, Netflix, WhatsApp, TikTok,
+    állatok, pets, rescue, időjárás, météo, tiempo, wetter
+  ">
+
+  <meta name="author" content="Állatmenhelyeket Támogató Kampány">
+
+  <style>
+    :root{
+      --accent:#ff7a00;
+      --overlay: rgba(255,255,255,0.75);
+      --radius:12px;
+      --max-width:980px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%; margin:0; font-family:Inter, Arial, sans-serif; -webkit-font-smoothing:antialiased;}
+    body{
+      background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.12)), url("/background.jpg") center/cover no-repeat fixed;
+      display:flex; align-items:flex-start; justify-content:center;
+      padding:28px; color:#111;
+    }
+    .container{
+      width:100%; max-width:var(--max-width);
+      background:var(--overlay); border-radius:var(--radius);
+      padding:26px; box-shadow:0 20px 40px rgba(0,0,0,0.12);
+      margin-top:20px;
+    }
+    .flags{text-align:center; margin-bottom:16px; font-size:1.3rem;}
+    .flags a{margin:0 6px; text-decoration:none;}
+    .hero{text-align:center; margin-bottom:14px;}
+    .hero h1{margin:0; font-size:1.4rem; font-weight:800;}
+    .hero p{margin:6px 0; font-size:1rem; color:#222;}
+    .donate-row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:18px 0;}
+    .btn{background:var(--accent); color:#fff; border:0;
+      padding:11px 18px; border-radius:10px; font-weight:700;
+      cursor:pointer; box-shadow:0 8px 18px rgba(0,0,0,0.12);}
+    .btn:hover{filter:brightness(.95)}
+    .custom{display:flex; gap:8px; justify-content:center; margin-top:14px; align-items:center;}
+    .custom input{padding:10px; width:140px; border-radius:8px; border:1px solid #dcdcdc; font-size:1rem; text-align:right;}
+    .stats{text-align:center; margin-top:18px; font-weight:600; color:#333;}
+    details{margin-top:16px; background:rgba(255,255,255,0.65); padding:12px; border-radius:8px; cursor:pointer;}
+    summary{font-weight:700; font-size:1rem;}
+    .footer{margin-top:18px; text-align:center; color:#444; font-size:0.9rem;}
+    .share{text-align:center; margin-top:18px;}
+    .share a{margin:0 8px; text-decoration:none; font-weight:700; color:#333;}
+  </style>
+
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+  <main class="container">
+    <!-- Nyelvválasztás -->
+    <div class="flags">
+      🌍 Nyelv:
+      <a href="index.html">🇬🇧</a>
+      <a href="de.html">🇩🇪</a>
+      <a href="fr.html">🇫🇷</a>
+      <a href="ua.html">🇺🇦</a>
+      <a href="hu.html">🇭🇺</a>
+      <a href="jp.html">🇯🇵</a>
+      <a href="es.html">🇪🇸</a>
+    </div>
+
+    <div class="hero">
+      <h1>Támogasd az állatmenhelyeket 🐾</h1>
+      <p>Millió állat vár a menhelyeken ételre, gondoskodásra és biztonságos otthonra.</p>
+      <p>Már egy kis összeg (1 €, 2 €, 5 €, 10 € vagy bármilyen adomány) is segít élelemmel, állatorvosi ellátással és biztonságos hellyel.</p>
+    </div>
+
+    <div class="donate-row">
+      <button class="btn" onclick="donate(1)">Adományozz 1 €</button>
+      <button class="btn" onclick="donate(2)">Adományozz 2 €</button>
+      <button class="btn" onclick="donate(5)">Adományozz 5 €</button>
+      <button class="btn" onclick="donate(10)">Adományozz 10 €</button>
+    </div>
+
+    <div class="custom">
+      <input id="customAmount" type="number" min="1" placeholder="Összeg €-ban" />
+      <button class="btn" onclick="donateCustom()">Más összeg</button>
+    </div>
+
+    <div class="stats">
+      Több mint <span id="donors">12 500</span> támogató ·
+      <span id="projects">37</span> sikeres projekt ·
+      Segítettünk <span id="animals">4 357</span> állaton
+    </div>
+
+    <details>
+      <summary>Küldetésünk</summary>
+      <p>2017 óta mentjük és védjük az állatokat – a házi kedvencektől kezdve a vadon élő állatok megőrzéséig. Több mint <strong>5 000 önkéntesből</strong> álló globális hálózatunk élelemmel, menedékkel és orvosi ellátással támogatja az állatokat.</p>
+      <p>Egyik kiemelt mentésünk <strong>Bubba, a 45 éves elefánt</strong> Indiában. Elhanyagolt előző gazdái után Bubba csapatunk segítségével került biztonságos rezervátumba, ahol most sokkal jobb életet élhet.</p>
+    </details>
+
+    <details>
+      <summary>Hogyan használjuk fel az adományokat</summary>
+      <p>🐾 50% napi étel és menedék · 🏥 30% állatorvosi ellátás · 🌍 20% mentések és logisztika. Átláthatóságot biztosítunk, és kérésre nyugtát adunk.</p>
+    </details>
+
+    <details>
+      <summary>Biztonság és megbízhatóság</summary>
+      <p>A fizetéseket a Stripe kezeli (PCI megfelelőség). SSL/TLS titkosítás van bekapcsolva. A kampányokat ellenőrizzük az átláthatóság érdekében.</p>
+    </details>
+
+    <div class="share">
+      <span>Megosztás ❤️:</span>
+      <a id="share-fb" target="_blank" rel="noopener noreferrer">Facebook</a>
+      <a id="share-x" target="_blank" rel="noopener noreferrer">X</a>
+      <a id="share-wa" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+      <a id="share-mail" target="_blank" rel="noopener noreferrer">Email</a>
+    </div>
+
+    <div class="footer">© 2025 Állatmenhelyeket Támogató Kampány. Minden jog fenntartva.</div>
+  </main>
+
+  <script>
+    const stripe = Stripe("pk_live_51S0zyXDyLtejYlZixEqmlIwnOSQ4yxGGvR2i5eulXNtmKnpeAIgXETXm3FNm8E4XSgeSnyeWboG5CHWJnLccnagx004MPoq1n1");
+
+    async function donate(amount){
+      try{
+        const resp=await fetch("/api/create-checkout-session",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({amount:Number(amount)})});
+        if(resp.ok){const data=await resp.json(); if(data.id){await stripe.redirectToCheckout({sessionId:data.id}); return;}}
+        alert("Hiba történt az adományozás közben. Próbáld újra.");
+      }catch(e){console.error(e); alert("Fizetési hiba.");}
+    }
+    function donateCustom(){
+      const v=Number(document.getElementById('customAmount').value);
+      if(!v||v<1){alert("Adj meg egy érvényes összeget (minimum 1 €).");return;}
+      donate(v);
+    }
+    (function(){
+      const url=encodeURIComponent(window.location.href);
+      const text=encodeURIComponent("Támogasd az állatmenhelyeket.");
+      document.getElementById('share-fb').href=`https://www.facebook.com/sharer/sharer.php?u=${url}`;
+      document.getElementById('share-x').href=`https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+      document.getElementById('share-wa').href=`https://api.whatsapp.com/send?text=${text}%20${url}`;
+      document.getElementById('share-mail').href=`mailto:?subject=Támogasd%20az%20állatokat&body=${text}%0A${url}`;
+    })();
+  </script>
+</body>
+</html>
