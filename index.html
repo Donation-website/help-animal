@@ -6,169 +6,194 @@
   <title>Donate to Support Animal Shelters – Help Pets in Need</title>
 
   <meta name="description" content="Help save and support animals in shelters worldwide. Donate a small amount to provide food, care and shelter. Secure payments via Stripe.">
-  <meta name="keywords" content="animal shelter, donate, pets, rescue, save animals, pet care, charity, help animals,
-    tierschutz, spenden, tierschutzverein, rettung, haustiere helfen, wohltätigkeit,
-    shelter, donazione, animali, rifugio, soccorso, beneficenza, nutrire animali,
-    állatmenhely, adomány, állatok, mentés, gondoskodás, jótékonyság,
-    news, hírek, noticias, nouvelles, notizie, notícias, Nachrichten, nieuws, nyheter, wiadomości, zprávy, новости, أخبار, ニュース, 新闻, 뉴스,
-    youtube, google, amazon, facebook, gmail, weather, chatgpt, instagram, netflix, whatsapp">
+
+  <!-- Keywords: includes 'news' in many languages + globally top searched terms -->
+  <meta name="keywords" content="
+    animal shelter, donate, pets, rescue, save animals, pet care, charity, help animals,
+    news, hírek, noticias, nouvelles, notizie, notícias, Nachrichten, nieuws, nyheter, wiadomości, zprávy, новости, أخبار, ニュース, 新闻, 新聞,
+    YouTube, Google, Facebook, Amazon, Weather, Gmail, ChatGPT, Instagram, Netflix, WhatsApp, TikTok,
+    動画, 天気, 天气, météo, nieuws, notizie, noticias, hírek
+  ">
+
   <meta name="author" content="Animal Shelter Support Campaign">
 
-  <!-- Social sharing preview -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Donate to Support Animal Shelters – Help Pets in Need" />
-  <meta property="og:description" content="Donate to provide food, veterinary care and shelter for animals worldwide." />
-  <meta property="og:image" content="https://example.com/background.jpg" />
-  <meta property="og:url" content="" id="og-url-meta" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Donate to Support Animal Shelters – Help Pets in Need" />
-  <meta name="twitter:description" content="Donate to provide food, veterinary care and shelter for animals worldwide." />
-  <meta name="twitter:image" content="https://example.com/background.jpg" />
-
   <style>
-    body {
-      margin:0;
-      font-family: Arial, sans-serif;
-      background: url("/background.jpg") no-repeat center center/cover;
+    :root{
+      --accent:#ff7a00;
+      --overlay: rgba(255,255,255,0.78); /* halvány áttetsző háttér */
+      --radius:12px;
+      --max-width:980px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%; margin:0; font-family:Inter, Arial, sans-serif; -webkit-font-smoothing:antialiased;}
+    body{
+      background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.12)), url("/background.jpg") center/cover no-repeat fixed;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
       color:#111;
     }
-    .overlay {
-      background: rgba(255,255,255,0.9);
-      padding: 30px;
-      border-radius:12px;
-      margin:20px auto;
-      max-width:800px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.15);
+
+    .container{
+      width:100%;
+      max-width:var(--max-width);
+      background:var(--overlay);
+      border-radius:var(--radius);
+      padding:26px;
+      box-shadow:0 20px 40px rgba(0,0,0,0.12);
     }
-    h1 {font-size:1.8em; margin-bottom:16px; text-align:center;}
-    p {font-size:1.05em; line-height:1.5; margin-bottom:18px;}
-    .donate-buttons {display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:20px 0;}
-    button {
-      background:#ff7a00;
-      border:none;
-      padding:12px 20px;
-      border-radius:8px;
-      font-size:16px;
-      font-weight:bold;
-      color:white;
+
+    h1{margin:0 0 10px; font-size:1.6rem;}
+    p.lead{margin:0 0 18px; line-height:1.45; font-size:1rem; color:#222;}
+
+    .donate-row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:18px 0;}
+    .btn{
+      background:var(--accent);
+      color:#fff;
+      border:0;
+      padding:11px 18px;
+      border-radius:10px;
+      font-weight:700;
       cursor:pointer;
+      box-shadow:0 8px 18px rgba(0,0,0,0.12);
     }
-    button:hover {background:#e66b00;}
-    .donate-any {text-align:center; margin:15px 0;}
-    .donate-any input {
+    .btn:hover{filter:brightness(.95)}
+
+    .custom {
+      display:flex;
+      gap:8px;
+      justify-content:center;
+      margin-top:14px;
+      align-items:center;
+    }
+    .custom input{
       padding:10px;
-      font-size:16px;
-      border:1px solid #ccc;
-      border-radius:6px;
-      width:120px;
+      width:140px;
+      border-radius:8px;
+      border:1px solid #dcdcdc;
+      font-size:1rem;
       text-align:right;
-      margin-right:8px;
     }
-    details {
-      margin: 14px 0;
-      padding: 14px;
-      background: rgba(255,255,255,0.7);
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-      cursor: pointer;
+
+    .stats{
+      text-align:center;
+      margin-top:18px;
+      font-weight:600;
+      color:#333;
     }
-    summary {font-size: 1.1em; font-weight: bold;}
-    .footer {margin-top:25px; font-size:0.9em; text-align:center; color:#333;}
-    .share-buttons {text-align:center; margin-top:20px;}
-    .share-buttons a {margin:0 8px; text-decoration:none; font-weight:bold; font-size:0.95em;}
-    .share-buttons a:hover {text-decoration:underline;}
-    @media(max-width:600px){h1{font-size:1.5em;} button{flex:1 1 100%;}}
+
+    details{margin-top:16px; background:rgba(255,255,255,0.65); padding:12px; border-radius:8px; cursor:pointer;}
+    summary{font-weight:700; font-size:1rem;}
+    .footer{margin-top:18px; text-align:center; color:#444; font-size:0.9rem;}
+
+    .share {text-align:center; margin-top:18px;}
+    .share a{margin:0 8px; text-decoration:none; font-weight:700; color:#333;}
+
+    @media (max-width:640px){
+      h1{font-size:1.3rem}
+      .donate-row{gap:8px}
+      .custom input{width:100px}
+    }
   </style>
 
   <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
-  <div class="overlay">
-    <h1>Support Animal Shelters 🐾</h1>
-    <p>
-      Millions of pets are waiting in shelters for love and care.<br>
-      Your donation of 1 €, 2 €, 5 €, or 10 €, or any amount can provide food, medical care, and a safe home for animals in need.<br>
-      Help fight animal suffering and support shelter initiatives worldwide.
+  <main class="container" role="main" aria-labelledby="title">
+    <h1 id="title">Support Animal Shelters 🐾</h1>
+
+    <p class="lead">
+      Millions of pets are waiting in shelters for food, care and a safe home.<br>
+      Your small gift (1 €, 2 €, 5 €, 10 € or any amount) helps provide meals, veterinary care and shelter.
     </p>
 
-    <div class="donate-buttons">
-      <button onclick="donate(1)">Donate 1 €</button>
-      <button onclick="donate(2)">Donate 2 €</button>
-      <button onclick="donate(5)">Donate 5 €</button>
-      <button onclick="donate(10)">Donate 10 €</button>
+    <div class="donate-row" role="group" aria-label="Donation buttons">
+      <button class="btn" onclick="donate(1)">Donate 1 €</button>
+      <button class="btn" onclick="donate(2)">Donate 2 €</button>
+      <button class="btn" onclick="donate(5)">Donate 5 €</button>
+      <button class="btn" onclick="donate(10)">Donate 10 €</button>
     </div>
 
-    <div class="donate-any">
-      <input type="number" id="customAmount" placeholder="Enter amount €" min="1" />
-      <button onclick="donateCustom()">Donate Any Amount</button>
+    <div class="custom" aria-label="Custom donation">
+      <input id="customAmount" type="number" min="1" placeholder="Enter amount €" />
+      <button class="btn" onclick="donateCustom()">Donate Any Amount</button>
     </div>
 
-    <p><strong>Already helped <span id="meals-count">4,357</span> animals</strong><br>
-       Donations go directly to animal shelters and rescue organizations</p>
+    <div class="stats" aria-live="polite">
+      Supported by over <span id="donors">12,500</span> kind donors ·
+      <span id="projects">37</span> successful projects · Helped <span id="animals">4,357</span> animals
+    </div>
 
-    <!-- Accordion -->
     <details>
-      <summary>About Our Mission 🐶🐱</summary>
-      <p>Since 2017, we have been rescuing and protecting animals of all kinds – from small pets to large wildlife projects. Our global network of more than <strong>5,000 volunteers</strong> provides food, shelter, and medical care.</p>
-      <p>One of our proudest moments was saving <strong>Bubba, a 45-year-old elephant</strong> in India. Neglected by his previous owners, Bubba was rescued by our team and relocated to a safe sanctuary where he now lives happily and freely.</p>
+      <summary>About Our Mission</summary>
+      <div>
+        <p>Since 2017 we rescue and protect animals of all kinds — from small pets to large wildlife projects. Our global network of more than <strong>5,000 volunteers</strong> provides food, shelter and medical care.</p>
+        <p>One of our proudest rescues was <strong>Bubba, a 45-year-old elephant</strong> in India. Neglected by previous owners, Bubba was rescued by our team and relocated to a safe sanctuary where he now lives more comfortably.</p>
+      </div>
     </details>
 
     <details>
-      <summary>How We Use Donations 💝</summary>
-      <p>🐾 50% provides daily food and shelter.<br>
-         🏥 30% covers veterinary treatments.<br>
-         🌍 20% supports international rescues and long-term projects.</p>
+      <summary>How Donations Are Used</summary>
+      <div>
+        <p>🐾 50% daily food & shelter · 🏥 30% veterinary care · 🌍 20% rescue & logistics. We keep transparency and provide receipts on request.</p>
+      </div>
     </details>
 
     <details>
-      <summary>Trust & Security 🔒</summary>
-      <p>✔️ Secure payment via Stripe<br>
-         ✔️ Full SSL encryption<br>
-         ✔️ Verified campaigns and transparency</p>
+      <summary>Trust & Security</summary>
+      <div>
+        <p>Payments handled by Stripe (PCI-compliant). SSL/TLS encryption enabled. Campaigns are verified for transparency.</p>
+      </div>
     </details>
 
-    <!-- Share section moved to bottom -->
-    <div class="share-buttons">
+    <div class="share" aria-label="Share this page">
       <span>Share ❤️:</span>
-      <a id="share-fb" href="#" target="_blank">Facebook</a>
-      <a id="share-x" href="#" target="_blank">X</a>
-      <a id="share-ig" href="https://www.instagram.com/" target="_blank">Instagram</a>
-      <a id="share-mail" href="#" target="_blank">Email</a>
+      <a id="share-fb" target="_blank" rel="noopener noreferrer">Facebook</a>
+      <a id="share-x" target="_blank" rel="noopener noreferrer">X</a>
+      <a id="share-wa" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+      <a id="share-mail" target="_blank" rel="noopener noreferrer">Email</a>
     </div>
 
     <div class="footer">© 2025 Animal Shelter Support Campaign. All rights reserved.</div>
-  </div>
+  </main>
 
   <script>
-    const stripe = Stripe("pk_live_51S0zyXDyLtejYlZixEqmlIwnOSQ4yxGGvR2i5eulXNtmKnpeAIgXETXm3FNm8E4XSgeSnyeWboG5CHWJnLccnagx004MPoq1n1");
-
-    async function donate(amount) {
-      const resp = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount })
-      });
-      const data = await resp.json();
-      stripe.redirectToCheckout({ sessionId: data.id });
-    }
-
-    async function donateCustom() {
-      const val = document.getElementById("customAmount").value;
-      if (!val || val < 1) {
-        alert("Please enter a valid amount.");
-        return;
-      }
-      donate(Number(val));
-    }
-
-    // Share links fill
-    (function initShare() {
+    (function initShare(){
       const url = encodeURIComponent(window.location.href);
       const text = encodeURIComponent("Support animal shelters and help pets in need.");
-      document.getElementById("share-fb").href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-      document.getElementById("share-x").href  = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
-      document.getElementById("share-mail").href = `mailto:?subject=Support%20Animals&body=${text}%20%0A${url}`;
+      document.getElementById('share-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+      document.getElementById('share-x').href = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+      document.getElementById('share-wa').href = `https://api.whatsapp.com/send?text=${text}%20${url}`;
+      document.getElementById('share-mail').href = `mailto:?subject=Support%20Animals&body=${text}%0A${url}`;
     })();
-  </script>
-</body>
-</html>
+
+    const stripe = Stripe("pk_live_51S0zyXDyLtejYlZixEqmlIwnOSQ4yxGGvR2i5eulXNtmKnpeAIgXETXm3FNm8E4XSgeSnyeWboG5CHWJnLccnagx004MPoq1n1");
+
+    async function donate(amount){
+      try{
+        const resp = await fetch("/api/create-checkout-session", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({ amount: Number(amount) })
+        });
+        if(!resp.ok) throw new Error('server');
+        const d = await resp.json();
+        if(d && d.id) await stripe.redirectToCheckout({ sessionId: d.id });
+        else alert('There was an error creating the checkout session.');
+      }catch(e){
+        console.error(e);
+        alert('Error: could not create donation. Please try again later.');
+      }
+    }
+
+    function donateCustom(){
+      const v = Number(document.getElementById('customAmount').value);
+      if(!v || v < 1){ alert('Please enter a valid amount (minimum 1 €).'); return; }
+      donate(v);
+    }
+
+    function animateId(id, endVal){
+      const el = document.getElementById(id);
+      if(!el) return;
+      const start = Number(el.textContent.replace(/
