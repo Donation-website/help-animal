@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Faire un don pour soutenir les refuges pour animaux – Aidez les animaux dans le besoin</title>
+
+  <meta name="description" content="Aidez à sauver et à soutenir les animaux dans les refuges du monde entier. Faites un petit don pour fournir nourriture, soins et abri. Paiements sécurisés via Stripe.">
+
+  <!-- Keywords en plusieurs langues + termes populaires -->
+  <meta name="keywords" content="
+    refuge pour animaux, don, animaux, sauver animaux, soins animaux, association caritative, aider animaux,
+    news, nouvelles, actualités, hírek, noticias, notizie, notícias, Nachrichten, nieuws, nyheter, wiadomości, zprávy, новости, ニュース, 新闻, 新聞,
+    YouTube, Google, Facebook, Amazon, Weather, Gmail, ChatGPT, Instagram, Netflix, WhatsApp, TikTok,
+    animaux, pets, rescue, animaux de compagnie, 動画, 天気, météo
+  ">
+
+  <meta name="author" content="Campagne de soutien aux refuges pour animaux">
+
+  <style>
+    :root{
+      --accent:#ff7a00;
+      --overlay: rgba(255,255,255,0.75);
+      --radius:12px;
+      --max-width:980px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%; margin:0; font-family:Inter, Arial, sans-serif; -webkit-font-smoothing:antialiased;}
+    body{
+      background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.12)), url("/background.jpg") center/cover no-repeat fixed;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:28px;
+      color:#111;
+    }
+    .container{
+      width:100%;
+      max-width:var(--max-width);
+      background:var(--overlay);
+      border-radius:var(--radius);
+      padding:26px;
+      box-shadow:0 20px 40px rgba(0,0,0,0.12);
+      margin-top:20px;
+    }
+    .flags {text-align:center; margin-bottom:16px; font-size:1.3rem;}
+    .flags a {margin:0 6px; text-decoration:none;}
+    .hero {text-align:center; margin-bottom:14px;}
+    .hero h1 {margin:0; font-size:1.4rem; font-weight:800;}
+    .hero p {margin:6px 0; font-size:1rem; color:#222;}
+    .donate-row{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:18px 0;}
+    .btn{
+      background:var(--accent); color:#fff; border:0;
+      padding:11px 18px; border-radius:10px; font-weight:700;
+      cursor:pointer; box-shadow:0 8px 18px rgba(0,0,0,0.12);
+    }
+    .btn:disabled{opacity:.6; cursor:not-allowed;}
+    .btn:hover{filter:brightness(.95)}
+    .custom {display:flex; gap:8px; justify-content:center; margin-top:14px; align-items:center;}
+    .custom input{
+      padding:10px; width:140px; border-radius:8px;
+      border:1px solid #dcdcdc; font-size:1rem; text-align:right;
+    }
+    .stats{text-align:center; margin-top:18px; font-weight:600; color:#333;}
+    details{margin-top:16px; background:rgba(255,255,255,0.65); padding:12px; border-radius:8px; cursor:pointer;}
+    summary{font-weight:700; font-size:1rem;}
+    .footer{margin-top:18px; text-align:center; color:#444; font-size:0.9rem;}
+    .share {text-align:center; margin-top:18px;}
+    .share a{margin:0 8px; text-decoration:none; font-weight:700; color:#333;}
+    .notice {text-align:center; margin-top:10px; color:#b33; font-weight:600; display:none;}
+  </style>
+
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+  <main class="container" role="main">
+    <!-- Sélecteur de langue -->
+    <div class="flags">
+      🌍 Langue:
+      <a href="index.html">🇬🇧</a>
+      <a href="de.html">🇩🇪</a>
+      <a href="fr.html">🇫🇷</a>
+      <a href="ua.html">🇺🇦</a>
+      <a href="hu.html">🇭🇺</a>
+      <a href="jp.html">🇯🇵</a>
+      <a href="es.html">🇪🇸</a>
+    </div>
+
+    <!-- Héros -->
+    <div class="hero">
+      <h1>Soutenez les refuges pour animaux 🐾</h1>
+      <p>Des millions d’animaux attendent dans des refuges de recevoir nourriture, soins et un foyer sûr.</p>
+      <p>Votre petit don (1 €, 2 €, 5 €, 10 € ou tout montant) aide à fournir repas, soins vétérinaires et abri.</p>
+    </div>
+
+    <!-- Boutons de don -->
+    <div class="donate-row">
+      <button class="btn" onclick="donate(1)">Donner 1 €</button>
+      <button class="btn" onclick="donate(2)">Donner 2 €</button>
+      <button class="btn" onclick="donate(5)">Donner 5 €</button>
+      <button class="btn" onclick="donate(10)">Donner 10 €</button>
+    </div>
+
+    <div class="custom">
+      <input id="customAmount" type="number" min="1" placeholder="Montant en €" />
+      <button class="btn" onclick="donateCustom()">Donner un montant libre</button>
+    </div>
+
+    <div class="stats">
+      Soutenu par plus de <span id="donors">12 500</span> donateurs ·
+      <span id="projects">37</span> projets réussis ·
+      Plus de <span id="animals">4 357</span> animaux aidés
+    </div>
+
+    <details>
+      <summary>Notre mission</summary>
+      <p>Depuis 2017, nous sauvons et protégeons des animaux de toutes sortes — des petits animaux de compagnie aux grands projets de faune. Notre réseau mondial de plus de <strong>5 000 bénévoles</strong> fournit nourriture, abri et soins médicaux.</p>
+      <p>Un de nos sauvetages les plus fiers est <strong>Bubba, un éléphant de 45 ans</strong> en Inde. Négligé par ses anciens propriétaires, Bubba a été sauvé par notre équipe et transféré dans un sanctuaire sûr où il vit désormais plus confortablement.</p>
+    </details>
+
+    <details>
+      <summary>Utilisation des dons</summary>
+      <p>🐾 50% nourriture & abri · 🏥 30% soins vétérinaires · 🌍 20% sauvetages & logistique. Transparence garantie, reçus fournis sur demande.</p>
+    </details>
+
+    <details>
+      <summary>Confiance & sécurité</summary>
+      <p>Paiements gérés par Stripe (PCI conforme). Chiffrement SSL/TLS activé. Campagnes vérifiées pour la transparence.</p>
+    </details>
+
+    <div class="share">
+      <span>Partager ❤️:</span>
+      <a id="share-fb" target="_blank" rel="noopener noreferrer">Facebook</a>
+      <a id="share-x" target="_blank" rel="noopener noreferrer">X</a>
+      <a id="share-wa" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+      <a id="share-mail" target="_blank" rel="noopener noreferrer">Email</a>
+    </div>
+
+    <div class="footer">© 2025 Campagne de soutien aux refuges pour animaux. Tous droits réservés.</div>
+  </main>
+
+  <script>
+    const stripe = Stripe("pk_live_51S0zyXDyLtejYlZixEqmlIwnOSQ4yxGGvR2i5eulXNtmKnpeAIgXETXm3FNm8E4XSgeSnyeWboG5CHWJnLccnagx004MPoq1n1");
+
+    async function donate(amount){
+      try{
+        const resp = await fetch("/api/create-checkout-session", {
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({amount:Number(amount)})
+        });
+        if(resp.ok){
+          const data = await resp.json();
+          if(data.id){ await stripe.redirectToCheckout({sessionId:data.id}); return; }
+        }
+        alert("Erreur lors du don. Merci d'essayer plus tard.");
+      }catch(e){ console.error(e); alert("Erreur de paiement."); }
+    }
+    function donateCustom(){
+      const v=Number(document.getElementById('customAmount').value);
+      if(!v||v<1){alert("Veuillez entrer un montant valide (min 1 €).");return;}
+      donate(v);
+    }
+    (function(){
+      const url=encodeURIComponent(window.location.href);
+      const text=encodeURIComponent("Soutenez les refuges pour animaux.");
+      document.getElementById('share-fb').href=`https://www.facebook.com/sharer/sharer.php?u=${url}`;
+      document.getElementById('share-x').href=`https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+      document.getElementById('share-wa').href=`https://api.whatsapp.com/send?text=${text}%20${url}`;
+      document.getElementById('share-mail').href=`mailto:?subject=Soutien%20aux%20animaux&body=${text}%0A${url}`;
+    })();
+  </script>
+</body>
+</html>
