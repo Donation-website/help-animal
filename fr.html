@@ -1,122 +1,127 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Soutenir les refuges pour animaux – Aidez les animaux en détresse</title>
-  <meta name="description" content="Aidez à sauver et soutenir les animaux dans les refuges du monde entier. Faites un don pour fournir nourriture, soins et abri. Paiements sécurisés via Stripe.">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Faites un don pour soutenir les refuges pour animaux – Aidez les animaux dans le besoin</title>
+  <meta name="description" content="Aidez à sauver et soutenir les animaux dans les refuges du monde entier. Faites un petit don pour fournir nourriture, soins et abri. Paiements sécurisés via Stripe.">
+  
+  <!-- Multilingual + high-traffic search keywords -->
   <meta name="keywords" content="
-    animal, refuge, don, animaux, sauver animaux, soins animaux, charité,
-    news, nouvelles, noticias, hírek, Nachrichten, YouTube, Google, Facebook, Instagram, TikTok, météo
+    animal shelter, donate, pets, rescue, save animals, pet care, charity, help animals,
+    adopt a pet, shelter adoption, adopt dog, adopt cat, rescue dog, rescue cat,
+    news, hírek, noticias, nouvelles, notizie, notícias, Nachrichten, nieuws, nyheter, wiadomości, zprávy, новости, أخبار, ニュース, 新闻,
+    YouTube, Google, Facebook, Amazon, Weather, Gmail, ChatGPT, Instagram, Netflix, WhatsApp, TikTok, Spotify, Maps, Translate, Wikipedia, eBay, Steam
   ">
+
   <meta name="author" content="Animal Shelter Support Campaign">
+  <meta name="robots" content="index, follow">
+  <script src="https://js.stripe.com/v3/"></script>
+
   <style>
-    body{margin:0; font-family:Arial, sans-serif; background:url('/background.jpg') center/cover no-repeat; color:#000; text-align:center;}
-    .overlay{background: rgba(255,255,255,0.45); padding:40px; max-width:640px; margin:60px auto; border-radius:12px; box-shadow:0 0 20px rgba(0,0,0,0.2);}
-    h1{font-size:2em; margin-bottom:10px;}
-    p{font-size:1.1em; margin:6px 0; line-height:1.4;}
-    .donate-buttons{margin:20px 0;}
-    button{background:#ff9800; border:none; padding:12px 20px; margin:6px; color:#fff; font-weight:bold; border-radius:8px; cursor:pointer;}
-    button:hover{background:#e68900;}
-    details{margin:20px 0; padding:15px; background:rgba(255,255,255,0.7); border-radius:8px; text-align:left;}
-    summary{font-weight:bold; cursor:pointer; font-size:1.1em;}
-    .footer{margin-top:20px; font-size:0.9em; color:#333;}
-    .share a{margin:0 8px; text-decoration:none;}
-    .flags{margin-bottom:18px;}
-    .flags a{margin:0 6px; text-decoration:none; font-weight:bold; display:inline-flex; align-items:center;}
-    .flags img{width:24px; height:16px; margin-right:4px; border-radius:2px;}
+    :root{--accent:#ff7a00;--overlay:rgba(255,255,255,0.60);--radius:12px;--max-width:980px;}
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, Arial, sans-serif;-webkit-font-smoothing:antialiased;}
+    body{background:linear-gradient(180deg,rgba(0,0,0,0.12),rgba(0,0,0,0.12)),url("/background.jpg")center/cover no-repeat fixed;display:flex;align-items:flex-start;justify-content:center;padding:28px;color:#111}
+    .container{width:100%;max-width:var(--max-width);background:var(--overlay);border-radius:var(--radius);padding:26px;box-shadow:0 20px 40px rgba(0,0,0,0.12);margin-top:20px}
+    .lang{display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:18px;font-weight:700;color:#333;}
+    .lang a{display:inline-flex;align-items:center;justify-content:center;padding:6px;border-radius:8px;text-decoration:none;color:inherit;}
+    .lang img{width:30px;height:auto;border-radius:4px;display:block;transition:transform .12s;}
+    .lang a:hover img{transform:scale(1.12);}
+    .flag-emoji{font-size:20px;line-height:1;margin:0 4px;display:inline-block}
+    .hero{text-align:center;margin-bottom:14px}
+    .hero h1{margin:0;font-size:1.6rem;font-weight:800}
+    .hero p{margin:8px 0;font-size:1.05rem;color:#222;max-width:740px;margin-left:auto;margin-right:auto}
+    .donate-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:18px 0}
+    .btn{background:var(--accent);color:#fff;border:0;padding:11px 18px;border-radius:10px;font-weight:700;cursor:pointer;box-shadow:0 8px 18px rgba(0,0,0,0.12)}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+    .btn:hover{filter:brightness(.95)}
+    .custom{display:flex;gap:8px;justify-content:center;margin-top:14px;align-items:center}
+    .custom input{padding:10px;width:140px;border-radius:8px;border:1px solid #dcdcdc;font-size:1rem;text-align:right}
+    .stats{text-align:center;margin-top:18px;font-weight:600;color:#333}
+    details{margin-top:16px;background:rgba(255,255,255,0.65);padding:12px;border-radius:8px;cursor:pointer}
+    summary{font-weight:700;font-size:1rem}
+    .footer{margin-top:18px;text-align:center;color:#444;font-size:.9rem}
+    .share{text-align:center;margin-top:18px}
+    .share a{margin:0 8px;text-decoration:none;font-weight:700;color:#333}
+    .notice{text-align:center;margin-top:10px;color:#b33;font-weight:600;display:none}
+    @media(max-width:640px){.hero h1{font-size:1.3rem}.donate-row{gap:8px}.custom input{width:100px}}
   </style>
 </head>
 <body>
-  <div class="overlay">
-    <div class="flags">
-      🌍 Langue: 
-      <a href="index.html"><img src="/flags/gb.png" alt="English">English</a>
-      <a href="de.html"><img src="/flags/de.png" alt="Deutsch">Deutsch</a>
-      <a href="fr.html"><img src="/flags/fr.png" alt="Français">Français</a>
-      <a href="ua.html"><img src="/flags/ua.png" alt="Українська">Українська</a>
-      <a href="hu.html"><img src="/flags/hu.png" alt="Magyar">Magyar</a>
-      <a href="jp.html"><img src="/flags/jp.png" alt="日本語">日本語</a>
-      <a href="es.html"><img src="/flags/es.png" alt="Español">Español</a>
+  <main class="container" role="main">
+    <nav class="lang" aria-label="Sélecteur de langue">
+      <a href="index.html" title="English"><img src="https://cdn.jsdelivr.net/npm/flag-icons/flags/4x3/gb.svg" alt="English" onerror="flagFallback(this,'🇬🇧')"></a>
+      <a href="de.html" title="Deutsch"><img src="https://cdn.jsdelivr.net/npm/flag-icons/flags/4x3/de.svg" alt="Deutsch" onerror="flagFallback(this,'🇩🇪')"></a>
+      <a href="fr.html" title="Français"><img src="https://cdn.jsdelivr.net/npm/flag-icons/flags/4x3/fr.svg" alt="Français" onerror="flagFallback(this,'🇫🇷')"></a>
+      <a href="ua.html" title="Українська"><img src="https://cdn.jsdelivr.net/npm/flag-icons/flags/4x3/ua.svg" alt="Українська" onerror="flagFallback(this,'🇺🇦')"></a>
+      <a href="hu.html" title="Magyar"><img src="https://cdn.jsdelivr.net/npm/flag-icons/flags/4x3/hu.svg" alt="Magyar" onerror="flagFallback(this,'🇭🇺')"></a>
+      <a href="jp.html" title="日本語"><img src="https://cdn.jsdelivr.net/npm/flag-icons/flags/4x3/jp.svg" alt="日本語" onerror="flagFallback(this,'🇯🇵')"></a>
+      <a href="es.html" title="Español"><img src="https://cdn.jsdelivr.net/npm/flag-icons/flags/4x3/es.svg" alt="Español" onerror="flagFallback(this,'🇪🇸')"></a>
+    </nav>
+
+    <div class="hero">
+      <h1>Soutenez les refuges pour animaux 🐾</h1>
+      <p>Des millions d'animaux attendent dans les refuges de la nourriture, des soins et un foyer sûr.</p>
+      <p>Votre petit don (1 €, 2 €, 5 €, 10 € ou tout montant) aide à fournir repas, soins vétérinaires et abri.</p>
     </div>
 
-    <h1>Soutenez les refuges pour animaux 🐾</h1>
-    <p>Des millions d’animaux attendent dans les refuges de la nourriture, des soins et un foyer sûr.</p>
-    <p>Votre petit don (1 €, 2 €, 5 €, 10 € ou tout autre montant) aide à fournir des repas, des soins vétérinaires et un abri.</p>
-
-    <div class="donate-buttons">
-      <button onclick="donate(1)">Don 1 €</button>
-      <button onclick="donate(2)">Don 2 €</button>
-      <button onclick="donate(5)">Don 5 €</button>
-      <button onclick="donate(10)">Don 10 €</button>
+    <div class="donate-row">
+      <button class="btn" onclick="donate(1)">Donner 1 €</button>
+      <button class="btn" onclick="donate(2)">Donner 2 €</button>
+      <button class="btn" onclick="donate(5)">Donner 5 €</button>
+      <button class="btn" onclick="donate(10)">Donner 10 €</button>
     </div>
 
     <div class="custom">
-      <input id="customAmount" type="number" min="1" placeholder="Entrez le montant €"/>
-      <button onclick="donateCustom()">Donner un montant personnalisé</button>
+      <input id="customAmount" type="number" min="1" placeholder="Montant €" />
+      <button class="btn" onclick="donateCustom()">Donner n'importe quel montant</button>
     </div>
 
-    <div class="stats">
-      Plus de <span id="donors">12,500</span> donateurs · 
-      <span id="projects">37</span> projets réussis · 
-      <span id="animals">4,357</span> animaux aidés
-    </div>
+    <div class="stats">Soutenu par plus de <span id="donors">12.500</span> donateurs · <span id="projects">37</span> projets réussis · <span id="animals">4.357</span> animaux aidés</div>
 
     <details>
       <summary>À propos de notre mission</summary>
-      <p>Depuis 2017, nous sauvons et protégeons les animaux de toutes sortes. Notre réseau de plus de <strong>5,000 bénévoles</strong> fournit nourriture, abri et soins médicaux.</p>
-      <p>Un de nos sauvetages les plus fiers fut <strong>Bubba, un éléphant de 45 ans</strong> en Inde. Négligé par ses anciens propriétaires, Bubba a été secouru par notre équipe et relogé dans un sanctuaire sûr.</p>
+      <div>
+        <p>Depuis 2017, nous sauvons et protégeons les animaux de toutes sortes — des animaux domestiques aux grands animaux sauvages. Notre réseau mondial de plus de <strong>5.000 bénévoles</strong> fournit nourriture, abri et soins médicaux.</p>
+        <p>Un de nos sauvetages les plus fiers fut <strong>Bubba, un éléphant de 45 ans</strong> en Inde. Négligé par ses anciens propriétaires, Bubba a été sauvé par notre équipe et relocalisé dans un sanctuaire sûr où il vit maintenant confortablement.</p>
+      </div>
     </details>
 
     <details>
-      <summary>Comment les dons sont utilisés</summary>
-      <p>🐾 50% nourriture et abri · 🏥 30% soins vétérinaires · 🌍 20% sauvetage et logistique. Transparence totale et reçus sur demande.</p>
+      <summary>Comment sont utilisées les donations ?</summary>
+      <div><p>🐾 50% nourriture & abri · 🏥 30% soins vétérinaires · 🌍 20% sauvetage & logistique. Transparence garantie, reçus sur demande.</p></div>
     </details>
 
     <details>
-      <summary>Confiance & Sécurité</summary>
-      <p>Les paiements sont traités par Stripe (PCI-compliant) avec SSL/TLS. Les campagnes sont vérifiées pour la transparence.</p>
+      <summary>Confiance & sécurité</summary>
+      <div><p>Les paiements sont gérés par Stripe (PCI-compliant). SSL/TLS activé. Les campagnes sont vérifiées pour la transparence.</p></div>
     </details>
 
-    <div class="share">
-      <span>Partager ❤️:</span>
+    <div id="notice" class="notice"></div>
+
+    <div class="share"><span>Partager ❤️:</span>
       <a id="share-fb" target="_blank">Facebook</a>
       <a id="share-x" target="_blank">X</a>
       <a id="share-wa" target="_blank">WhatsApp</a>
       <a id="share-mail" target="_blank">Email</a>
     </div>
 
-    <div class="footer">© 2025 Animal Shelter Support Campaign. Tous droits réservés.</div>
-  </div>
+    <div class="footer">© 2025 Campagne de soutien aux refuges pour animaux. Tous droits réservés.</div>
+  </main>
 
-  <script src="https://js.stripe.com/v3/"></script>
   <script>
-    const stripe = Stripe("pk_live_51S0zyXDyLtejYlZixEqmlIwnOSQ4yxGGvR2i5eulXNtmKnpeAIgXETXm3FNm8E4XSgeSnyeWboG5CHWJnLccnagx004MPoq1n1");
-
-    async function donate(amount){
-      const resp = await fetch("/api/create-checkout-session",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({amount})
-      });
-      const data = await resp.json();
-      stripe.redirectToCheckout({sessionId:data.id});
+    const FALLBACK_PAYMENT_LINK="";
+    const stripe=Stripe("pk_live_51S0zyXDyLtejYlZixEqmlIwnOSQ4yxGGvR2i5eulXNtmKnpeAIgXETXm3FNm8E4XSgeSnyeWboG5CHWJnLccnagx004MPoq1n1");
+    function showNotice(m){const n=document.getElementById('notice');if(n){n.style.display='block';n.textContent=m;}}
+    async function donate(amount){try{const resp=await fetch("/api/create-checkout-session",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({amount:Number(amount)})});
+      if(resp.ok){const data=await resp.json();if(data&&data.id){await stripe.redirectToCheckout({sessionId:data.id});return;}}
+      if(FALLBACK_PAYMENT_LINK){let url=FALLBACK_PAYMENT_LINK.includes("{AMOUNT}")?FALLBACK_PAYMENT_LINK.replace("{AMOUNT}",encodeURIComponent(amount)):FALLBACK_PAYMENT_LINK+(FALLBACK_PAYMENT_LINK.includes('?')?'&':'?')+'amount='+encodeURIComponent(amount);window.location.href=url;return;}
+      showNotice("Erreur lors du paiement.");}catch(e){console.error(e);showNotice("Erreur lors du paiement.");}}
+    function donateCustom(){const v=Number(document.getElementById('customAmount').value);if(!v||v<1){alert('Veuillez entrer un montant valide (minimum 1 €).');return;}donate(v);}
+    (function initShare(){const url=encodeURIComponent(window.location.href);const text=encodeURIComponent("Soutenez les refuges pour animaux et aidez les animaux dans le besoin.");document.getElementById('share-fb').href=`https://www.facebook.com/sharer/sharer.php?u=${url}`;document.getElementById('share-x').href=`https://twitter.com/intent/tweet?url=${url}&text=${text}`;document.getElementById('share-wa').href=`https://api.whatsapp.com/send?text=${text}%20${url}`;document.getElementById('share-mail').href=`mailto:?subject=Soutenez les animaux&body=${text}%0A${url}`})();
+    function flagFallback(img,emoji){try{const a=img.parentNode;const span=document.createElement('span');span.className='flag-emoji';span.textContent=emoji;span.setAttribute('role','img');span.setAttribute('aria-label',img.alt||'');a.replaceChild(span,img);}catch(e){console.warn("flagFallback failed",e);}
     }
-
-    function donateCustom(){
-      const v = Number(document.getElementById('customAmount').value);
-      if(!v || v<1){ alert('Veuillez entrer un montant valide (minimum 1 €).'); return; }
-      donate(v);
-    }
-
-    (function(){
-      const url = encodeURIComponent(window.location.href);
-      const text = encodeURIComponent("Soutenez les refuges pour animaux et aidez les animaux en détresse.");
-      document.getElementById('share-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-      document.getElementById('share-x').href = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
-      document.getElementById('share-wa').href = `https://api.whatsapp.com/send?text=${text}%20${url}`;
-      document.getElementById('share-mail').href = `mailto:?subject=Soutien%20Animaux&body=${text}%0A${url}`;
-    })();
   </script>
 </body>
 </html>
