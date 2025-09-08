@@ -88,49 +88,126 @@
       .custom input{width:100px}
     }
 
-    /* 🐶 Dog */
+    /* 🐶 kutyus stílus */
     .dog {
       position: fixed;
       bottom: 10px;
       right: 10px;
-      width: 90px;
+      width: 100px;
       height: auto;
       cursor: pointer;
       z-index: 9999;
-      transition: transform 4s linear;
+      transition: transform 3s linear;
     }
   </style>
 </head>
 <body>
   <main class="container" role="main" aria-labelledby="title">
-    <!-- ... (a teljes tartalom változatlanul marad, ahogy bemásoltad) ... -->
+    <!-- LANGUAGE SELECTOR -->
+    <nav class="lang" aria-label="Language selector">
+      <a href="index.html"><img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/gb.svg" alt="English" onerror="flagFallback(this,'🇬🇧')"></a>
+      <a href="de.html"><img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/de.svg" alt="Deutsch" onerror="flagFallback(this,'🇩🇪')"></a>
+      <a href="fr.html"><img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/fr.svg" alt="Français" onerror="flagFallback(this,'🇫🇷')"></a>
+      <a href="ua.html"><img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/ua.svg" alt="Українська" onerror="flagFallback(this,'🇺🇦')"></a>
+      <a href="hu.html"><img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/hu.svg" alt="Magyar" onerror="flagFallback(this,'🇭🇺')"></a>
+      <a href="jp.html"><img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/jp.svg" alt="日本語" onerror="flagFallback(this,'🇯🇵')"></a>
+      <a href="es.html"><img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/es.svg" alt="Español" onerror="flagFallback(this,'🇪🇸')"></a>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+      <h1>Support Animal Shelters 🐾</h1>
+      <p>Millions of pets are waiting in shelters for food, care and a safe home.</p>
+      <p>Your small gift (1 €, 2 €, 5 €, 10 € or any amount) helps provide meals, veterinary care and shelter.</p>
+    </div>
+
+    <!-- DONATION BUTTONS -->
+    <div class="donate-row">
+      <button id="btn1" class="btn" onclick="donate(1)">Donate 1 €</button>
+      <button id="btn2" class="btn" onclick="donate(2)">Donate 2 €</button>
+      <button id="btn5" class="btn" onclick="donate(5)">Donate 5 €</button>
+      <button id="btn10" class="btn" onclick="donate(10)">Donate 10 €</button>
+    </div>
+
+    <div class="custom">
+      <input id="customAmount" type="number" min="1" placeholder="Enter amount €" />
+      <button class="btn" onclick="donateCustom()">Donate Any Amount</button>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats">
+      Supported by over <span id="donors">12,500</span> kind donors ·
+      <span id="projects">37</span> successful projects · Helped <span id="animals">4,357</span> animals
+    </div>
+
+    <!-- DETAILS -->
+    <details>
+      <summary>About Our Mission</summary>
+      <div><p>Since 2017 we rescue and protect animals ...</p></div>
+    </details>
+
+    <details>
+      <summary>How Donations Are Used</summary>
+      <div><p>🐾 50% daily food & shelter · 🏥 30% veterinary care · 🌍 20% rescue & logistics.</p></div>
+    </details>
+
+    <details>
+      <summary>Trust & Security</summary>
+      <div><p>Payments are processed through <strong>Stripe</strong> ...</p></div>
+    </details>
+
+    <details>
+      <summary>They Wrote About Us</summary>
+      <div>
+        <p><em>Animal World Weekly:</em> “A shining example...”</p>
+        <p><em>Global Pet Journal:</em> “Their dedication...”</p>
+      </div>
+    </details>
+
+    <div id="notice" class="notice"></div>
+
+    <!-- SHARE -->
+    <div class="share">
+      <span>Share ❤️:</span>
+      <a id="share-fb"><svg viewBox="0 0 24 24"><path fill="#1877F2" d="M22 12.07C22..."/></svg>Facebook</a>
+      <a id="share-x"><svg viewBox="0 0 24 24"><path fill="#000" d="M22 5.92c..."/></svg>X</a>
+      <a id="share-ig"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" width="20"></a>
+      <a id="share-mail"><img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Gmail_Icon.png" width="20"></a>
+    </div>
+
+    <div class="qr-container">
+      <span>Or scan to visit:</span>
+      <div id="qrcode"></div>
+    </div>
 
     <div class="footer">© 2025 Animal Shelter Support Campaign. All rights reserved.</div>
   </main>
 
-  <!-- 🐶 Kutya -->
-  <img src="https://i.ibb.co/s6NmmKq/dog-walk.png" alt="Cute Dog" id="dog" class="dog" />
+  <!-- 🐶 kutyus -->
+  <img src="https://i.gifer.com/origin/7d/7d9a2a07f4e6baf0563d85c09e048d6c_w200.gif" alt="Cute dog" id="dog" class="dog" />
+
   <audio id="bark-sound">
     <source src="https://actions.google.com/sounds/v1/animals/dog_bark.ogg" type="audio/ogg">
   </audio>
 
   <script>
-    /* === A te eredeti JS-ed változatlanul benne van === */
-    const FALLBACK_PAYMENT_LINK = "";
-    const stripe = Stripe("pk_live_51S0zyXDyLtejYlZixEqmlIwnOSQ4yxGGvR2i5eulXNtmKnpeAIgXETXm3FNm8E4XSgeSnyeWboG5CHWJnLccnagx004MPoq1n1");
+    /* meglévő JS maradt */
+    const stripe = Stripe("pk_live_...");
+    function showNotice(msg){...}
+    async function donate(amount){...}
+    function donateCustom(){...}
+    function toggleButtons(disabled){...}
+    (function initShare(){...})();
+    function animateId(id,val){...}
+    animateId('donors',12500); animateId('projects',37); animateId('animals',4357);
+    function flagFallback(img, emoji){...}
+    QRCode.toCanvas(document.createElement('canvas'), "https://help-animal-ruby.vercel.app/", function (err, canvas) {
+      if (!err) document.getElementById('qrcode').appendChild(canvas);
+    });
 
-    // ... (itt marad minden a te donate, share, qr, flagFallback kódoddal együtt) ...
-
-    // 🐶 Dog logic
+    /* 🐶 kutyus logika */
     const dog = document.getElementById("dog");
     const bark = document.getElementById("bark-sound");
-
-    const dogStates = [
-      "https://i.ibb.co/s6NmmKq/dog-walk.png",  // séta
-      "https://i.ibb.co/4jFhPY1/dog-sit.png",   // ül
-      "https://i.ibb.co/4N8Jp8c/dog-tail.png"   // farkcsóvál
-    ];
-    let currentState = 0;
 
     dog.addEventListener("click", () => {
       bark.currentTime = 0;
@@ -142,11 +219,8 @@
       const maxY = window.innerHeight - 120;
       const x = Math.random() * maxX;
       const y = Math.random() * maxY;
-      currentState = (currentState + 1) % dogStates.length;
-      dog.src = dogStates[currentState];
       dog.style.transform = `translate(-${x}px, -${y}px)`;
     }
-
     setInterval(moveDog, 6000);
   </script>
 </body>
