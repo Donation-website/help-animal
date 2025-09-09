@@ -100,7 +100,7 @@
 </head>
 <body>
   <!-- háttérzene -->
-  <audio id="bg-audio" src="melody-catchy-disco.mp3" autoplay loop preload="auto"></audio>
+  <audio id="bg-audio" src="melody-catchy-disco.mp3" preload="auto"></audio>
 
   <main class="container" role="main" aria-labelledby="title">
     <!-- LANGUAGE SELECTOR + mute button -->
@@ -115,14 +115,14 @@
       <span id="mute-toggle" title="Toggle sound">🔇</span>
     </nav>
 
-    <!-- (a teljes eredeti tartalom változatlan) -->
+    <!-- Hero -->
     <div class="hero">
       <h1>Support Animal Shelters 🐾</h1>
       <p>Millions of pets are waiting in shelters for food, care and a safe home.</p>
       <p>Your small gift (1 €, 2 €, 5 €, 10 € or any amount) helps provide meals, veterinary care and shelter.</p>
     </div>
 
-    <!-- ... többi eredeti tartalom itt marad változatlanul ... -->
+    <!-- további eredeti tartalom ide kerül változatlanul -->
 
     <div class="footer">© 2025 Animal Shelter Support Campaign. All rights reserved.</div>
   </main>
@@ -131,50 +131,39 @@
     const audio = document.getElementById('bg-audio');
     const muteBtn = document.getElementById('mute-toggle');
 
-    // induláskor néma, fade-in indul
+    let fading = null;
+
+    function fadeTo(targetVolume, duration) {
+      if (fading) clearInterval(fading);
+      const step = 0.05;
+      fading = setInterval(() => {
+        if (Math.abs(audio.volume - targetVolume) < step) {
+          audio.volume = targetVolume;
+          clearInterval(fading);
+        } else {
+          audio.volume += (audio.volume < targetVolume ? step : -step);
+        }
+      }, duration * step);
+    }
+
+    // indulás: autoplay + fade-in
     audio.volume = 0;
-    audio.muted = false; // engedjük a fade-et
-    audio.play().catch(()=>{});
+    audio.loop = false;
+    audio.play().then(() => fadeTo(1, 2000)).catch(()=>{});
 
-    function fadeIn(audioEl, duration=3000) {
-      let v = 0;
-      const step = 0.05;
-      const int = setInterval(()=>{
-        if(v < 1){
-          v = Math.min(1, v+step);
-          audioEl.volume = v;
-        } else {
-          clearInterval(int);
-        }
-      }, duration*step/1);
-    }
-
-    function fadeOutIn(audioEl, duration=3000) {
-      let v = audioEl.volume;
-      const step = 0.05;
-      const int = setInterval(()=>{
-        if(v > 0){
-          v = Math.max(0, v-step);
-          audioEl.volume = v;
-        } else {
-          clearInterval(int);
-          audioEl.currentTime = 0;
-          fadeIn(audioEl, duration);
-        }
-      }, duration*step/1);
-    }
-
-    // fade in az elején
-    fadeIn(audio, 3000);
-
-    // figyeljük a végét hogy fade out-oljon
-    audio.addEventListener('timeupdate', ()=>{
-      if(audio.duration && audio.currentTime > audio.duration-4){
-        fadeOutIn(audio, 3000);
+    // ha vége, fade-out, majd újraindul
+    audio.addEventListener("timeupdate", () => {
+      if (audio.duration && audio.currentTime > audio.duration - 3) {
+        fadeTo(0, 2000);
       }
     });
+    audio.addEventListener("ended", () => {
+      audio.currentTime = 0;
+      audio.play();
+      fadeTo(1, 2000);
+    });
 
-    // mute ikon működése
+    // hangszóró ikon
     muteBtn.addEventListener('click', () => {
       audio.muted = !audio.muted;
       muteBtn.textContent = audio.muted ? '🔇' : '🔊';
