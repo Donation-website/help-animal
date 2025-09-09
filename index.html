@@ -31,8 +31,28 @@
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family:Inter, Arial, sans-serif;-webkit-font-smoothing:antialiased;}
     body{
-      background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.12)), url("/background.jpg") center/cover no-repeat fixed;
-      display:flex; align-items:flex-start; justify-content:center; padding:28px; color:#111;
+      /* megtartottam egy enyhe fallback gradientet; a video fölött a tartalom látható lesz */
+      margin:0;
+      height:100%;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:28px;
+      color:#111;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.12));
+    }
+
+    /* háttér videó — FIX: z-index 0, .container z-index 1, így a video BENN lesz és FELETT a tartalom */
+    #bg-video {
+      position: fixed;
+      inset: 0; /* top:0; right:0; bottom:0; left:0; */
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0; /* háttérben, de a body háttér NEM takarja */
+      pointer-events: none; /* ne zavarja a kattintásokat */
     }
 
     .container{
@@ -42,6 +62,8 @@
       padding:26px;
       box-shadow:0 20px 40px rgba(0,0,0,0.12);
       margin-top:20px;
+      position: relative;
+      z-index: 1; /* legyen előtérben a videó fölött */
     }
 
     /* Language selector: jsDelivr .svg flags + JS fallback to emoji if load fails */
@@ -94,6 +116,11 @@
   </style>
 </head>
 <body>
+  <!-- háttérvideó: használj relatív útvonalat, a fájl neve legyen pontosan: background.mp4 -->
+  <video id="bg-video" autoplay muted loop playsinline preload="auto">
+    <source src="background.mp4" type="video/mp4">
+  </video>
+
   <main class="container" role="main" aria-labelledby="title">
     <!-- LANGUAGE SELECTOR: jsDelivr .svg flags + JS fallback to emoji if load fails -->
     <nav class="lang" aria-label="Language selector">
@@ -324,6 +351,62 @@
         document.getElementById('qrcode').appendChild(canvas);
       }
     });
+  </script>
+
+  <!-- JAVASCRIPT JAVÍTÁS A HÁTTÉRVIDEÓHOZ: próbálja lejátszani, hiba/fallback kezeléssel -->
+  <script>
+    (function fixBgVideo(){
+      const v = document.getElementById('bg-video');
+      if(!v) return;
+
+      // Ha a video hibát jelez (pl. rossz útvonal), eltüntetjük, és a háttér gradient marad
+      v.addEventListener('error', function(e){
+        console.error('Background video error', e);
+        v.style.display = 'none';
+        document.body.style.background = 'linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.12))';
+      });
+
+      // Próbáljuk meg automatikusan elindítani a videót; ha az autoplay blokkolva van, készítünk egy egyszerű "Play" gombot
+      const playPromise = v.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          // sikeres autoplay
+        }).catch((err) => {
+          console.warn('Autoplay blocked or failed; showing fallback and click-to-play control.', err);
+          v.style.display = 'none';
+          document.body.style.background = 'linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.12))';
+
+          // egyszerű, minimál gomb a háttérvideó elindításához
+          const btn = document.createElement('button');
+          btn.textContent = 'Play background video';
+          btn.setAttribute('aria-label','Play background video');
+          Object.assign(btn.style, {
+            position: 'fixed',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%,-50%)',
+            zIndex: '2',
+            padding: '12px 18px',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontWeight: '700',
+            background: 'rgba(255,255,255,0.95)',
+            border: '1px solid rgba(0,0,0,0.08)'
+          });
+          btn.addEventListener('click', function(){
+            v.style.display = '';
+            v.muted = true;
+            v.play().then(()=> {
+              btn.remove();
+            }).catch(e=>{
+              console.error('Play failed', e);
+              btn.remove();
+            });
+          });
+          document.body.appendChild(btn);
+        });
+      }
+    })();
   </script>
 </body>
 </html>
