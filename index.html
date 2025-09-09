@@ -94,6 +94,9 @@
   </style>
 </head>
 <body>
+  <!-- ADDED: background music (place melody-catchy-disco.mp3 next to this HTML file) -->
+  <audio id="bg-audio" src="melody-catchy-disco.mp3" autoplay preload="auto"></audio>
+
   <main class="container" role="main" aria-labelledby="title">
     <!-- LANGUAGE SELECTOR: jsDelivr .svg flags + JS fallback to emoji if load fails -->
     <nav class="lang" aria-label="Language selector">
@@ -324,6 +327,98 @@
         document.getElementById('qrcode').appendChild(canvas);
       }
     });
+  </script>
+
+  <!-- ADDED: smooth loop + fade logic for the background audio (keeps user experience smooth on loop) -->
+  <script>
+    (function smoothAudioLoop(){
+      const audio = document.getElementById('bg-audio');
+      if(!audio) return;
+
+      // We'll handle the loop manually so we can fade out before the end,
+      // jump to start and fade in — avoiding a noticeable click/pop.
+      const fadeSeconds = 3.0; // seconds to fade out/in
+      const pollInterval = 60; // ms for the fade steps
+      let isFading = false;
+
+      // ensure a sensible initial volume
+      audio.volume = 1.0;
+
+      // Try to autoplay; if blocked, show a small unobtrusive play button
+      const tryPlay = audio.play();
+      if (tryPlay !== undefined) {
+        tryPlay.catch(() => {
+          const btn = document.createElement('button');
+          btn.id = 'play-audio-btn';
+          btn.textContent = 'Play site audio';
+          Object.assign(btn.style, {
+            position: 'fixed',
+            right: '12px',
+            bottom: '12px',
+            zIndex: '9999',
+            padding: '10px 12px',
+            borderRadius: '8px',
+            border: '1px solid rgba(0,0,0,0.08)',
+            background: 'rgba(255,255,255,0.95)',
+            cursor: 'pointer',
+            fontWeight: '700'
+          });
+          btn.addEventListener('click', function(){
+            audio.play().catch(()=>{});
+            btn.remove();
+          });
+          document.body.appendChild(btn);
+        });
+      }
+
+      function fadeOutAndRestart(){
+        isFading = true;
+        const totalSteps = Math.max(6, Math.round((fadeSeconds*1000)/pollInterval));
+        let step = 0;
+        const startVol = audio.volume;
+        const outInterval = setInterval(()=>{
+          step++;
+          const t = step / totalSteps;
+          audio.volume = Math.max(0, startVol * (1 - t));
+          if(step >= totalSteps){
+            clearInterval(outInterval);
+            // jump to start and fade in
+            audio.pause();
+            audio.currentTime = 0;
+            audio.volume = 0;
+            // try to play again (should be allowed if user previously interacted)
+            audio.play().catch(()=>{ /* if still blocked, user will need to click the play button */ });
+            // fade in
+            let stepIn = 0;
+            const inInterval = setInterval(()=>{
+              stepIn++;
+              const tt = stepIn / totalSteps;
+              audio.volume = Math.min(1, tt);
+              if(stepIn >= totalSteps){
+                clearInterval(inInterval);
+                isFading = false;
+              }
+            }, pollInterval);
+          }
+        }, pollInterval);
+      }
+
+      audio.addEventListener('timeupdate', function(){
+        if(!audio.duration || isFading) return;
+        // start fade a little earlier than the last fadeSeconds so transition is smooth
+        if(audio.currentTime >= audio.duration - fadeSeconds - 0.05){
+          fadeOutAndRestart();
+        }
+      });
+
+      // in case 'ended' fires, fallback to restart
+      audio.addEventListener('ended', function(){
+        if(!isFading){
+          audio.currentTime = 0;
+          audio.play().catch(()=>{});
+        }
+      });
+    })();
   </script>
 </body>
 </html>
