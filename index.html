@@ -23,6 +23,7 @@
   <style>
     :root{
       --accent:#ff7a00;
+      /* slightly more transparent overlay as requested */
       --overlay: rgba(255,255,255,0.60);
       --radius:12px;
       --max-width:980px;
@@ -41,23 +42,16 @@
       padding:26px;
       box-shadow:0 20px 40px rgba(0,0,0,0.12);
       margin-top:20px;
-      position:relative;
     }
 
+    /* Language selector: jsDelivr .svg flags + JS fallback to emoji if load fails */
     .lang{display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:18px;font-weight:700;color:#333;}
     .lang a{display:inline-flex;align-items:center;justify-content:center;padding:6px;border-radius:8px;text-decoration:none;color:inherit;}
     .lang img{width:30px;height:auto;border-radius:4px;display:block;transition:transform .12s;}
     .lang a:hover img{transform:scale(1.12);}
     .flag-emoji{font-size:20px;line-height:1;margin:0 4px;display:inline-block}
 
-    /* hangszóró ikon */
-    #mute-toggle {
-      margin-left: 12px;
-      cursor: pointer;
-      font-size: 20px;
-      user-select: none;
-    }
-
+    /* Hero centered and neat (three lines) */
     .hero{text-align:center;margin-bottom:14px}
     .hero h1{margin:0;font-size:1.6rem;font-weight:800}
     .hero p{margin:8px 0;font-size:1.05rem;color:#222; max-width:740px; margin-left:auto; margin-right:auto;}
@@ -81,6 +75,7 @@
 
     .notice{text-align:center;margin-top:10px;color:#b33;font-weight:600;display:none}
 
+    /* pulsing donation buttons */
     @keyframes pulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.07); }
@@ -99,75 +94,331 @@
   </style>
 </head>
 <body>
-  <!-- háttérzene -->
-  <audio id="bg-audio" src="melody-catchy-disco.mp3" preload="auto"></audio>
+  <!-- ADDED: background music (place melody-catchy-disco.mp3 next to this HTML file) -->
+  <audio id="bg-audio" src="melody-catchy-disco.mp3" autoplay preload="auto"></audio>
 
   <main class="container" role="main" aria-labelledby="title">
-    <!-- LANGUAGE SELECTOR + mute button -->
+    <!-- LANGUAGE SELECTOR: jsDelivr .svg flags + JS fallback to emoji if load fails -->
     <nav class="lang" aria-label="Language selector">
-      <a href="index.html"><img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/gb.svg" alt="English" onerror="flagFallback(this,'🇬🇧')"></a>
-      <a href="de.html"><img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/de.svg" alt="Deutsch" onerror="flagFallback(this,'🇩🇪')"></a>
-      <a href="fr.html"><img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/fr.svg" alt="Français" onerror="flagFallback(this,'🇫🇷')"></a>
-      <a href="ua.html"><img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/ua.svg" alt="Українська" onerror="flagFallback(this,'🇺🇦')"></a>
-      <a href="hu.html"><img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/hu.svg" alt="Magyar" onerror="flagFallback(this,'🇭🇺')"></a>
-      <a href="jp.html"><img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/jp.svg" alt="日本語" onerror="flagFallback(this,'🇯🇵')"></a>
-      <a href="es.html"><img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/es.svg" alt="Español" onerror="flagFallback(this,'🇪🇸')"></a>
-      <span id="mute-toggle" title="Toggle sound">🔇</span>
+      <a href="index.html" title="English" aria-label="English" class="lang-link">
+        <img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/gb.svg" alt="English" onerror="flagFallback(this,'🇬🇧')">
+      </a>
+      <a href="de.html" title="Deutsch" aria-label="Deutsch" class="lang-link">
+        <img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/de.svg" alt="Deutsch" onerror="flagFallback(this,'🇩🇪')">
+      </a>
+      <a href="fr.html" title="Français" aria-label="Français" class="lang-link">
+        <img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/fr.svg" alt="Français" onerror="flagFallback(this,'🇫🇷')">
+      </a>
+      <a href="ua.html" title="Українська" aria-label="Українська" class="lang-link">
+        <img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/ua.svg" alt="Українська" onerror="flagFallback(this,'🇺🇦')">
+      </a>
+      <a href="hu.html" title="Magyar" aria-label="Magyar" class="lang-link">
+        <img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/hu.svg" alt="Magyar" onerror="flagFallback(this,'🇭🇺')">
+      </a>
+      <a href="jp.html" title="日本語" aria-label="日本語" class="lang-link">
+        <img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/jp.svg" alt="日本語" onerror="flagFallback(this,'🇯🇵')">
+      </a>
+      <a href="es.html" title="Español" aria-label="Español" class="lang-link">
+        <img src="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/flags/4x3/es.svg" alt="Español" onerror="flagFallback(this,'🇪🇸')">
+      </a>
     </nav>
 
-    <!-- Hero -->
-    <div class="hero">
+    <!-- Hero (exactly three centered lines as requested) -->
+    <div class="hero" aria-hidden="false">
       <h1>Support Animal Shelters 🐾</h1>
       <p>Millions of pets are waiting in shelters for food, care and a safe home.</p>
       <p>Your small gift (1 €, 2 €, 5 €, 10 € or any amount) helps provide meals, veterinary care and shelter.</p>
     </div>
 
-    <!-- további eredeti tartalom ide kerül változatlanul -->
+    <!-- Donation buttons -->
+    <div class="donate-row" role="group" aria-label="Donation buttons">
+      <button id="btn1" class="btn" onclick="donate(1)">Donate 1 €</button>
+      <button id="btn2" class="btn" onclick="donate(2)">Donate 2 €</button>
+      <button id="btn5" class="btn" onclick="donate(5)">Donate 5 €</button>
+      <button id="btn10" class="btn" onclick="donate(10)">Donate 10 €</button>
+    </div>
+
+    <div class="custom" aria-label="Custom donation">
+      <input id="customAmount" type="number" min="1" placeholder="Enter amount €" />
+      <button class="btn" onclick="donateCustom()">Donate Any Amount</button>
+    </div>
+
+    <!-- Impact / stats (kept the original numbers you had) -->
+    <div class="stats" aria-live="polite">
+      Supported by over <span id="donors">12,500</span> kind donors ·
+      <span id="projects">37</span> successful projects · Helped <span id="animals">4,357</span> animals
+    </div>
+
+    <!-- Details + Bubba story included -->
+    <details>
+      <summary>About Our Mission</summary>
+      <div>
+        <p>Since 2017 we rescue and protect animals of all kinds — from small pets to large wildlife projects. Our global network of more than <strong>5,000 volunteers</strong> provides food, shelter, and medical care.</p>
+        <p>One of our proudest rescues was <strong>Bubba, a 45-year-old elephant</strong> in India. Neglected by previous owners, Bubba was rescued by our team and relocated to a safe sanctuary where he now lives more comfortably with proper care.</p>
+        <p>Thanks to supporters around the world we've delivered thousands of meals, arranged numerous veterinary treatments, and rehomed many companion animals.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>How Donations Are Used</summary>
+      <div>
+        <p>🐾 50% daily food & shelter · 🏥 30% veterinary care · 🌍 20% rescue & logistics. We keep transparency and provide receipts on request.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Trust & Security</summary>
+      <div>
+        <p>Payments are processed through <strong>Stripe</strong>, a globally trusted, PCI DSS-compliant provider. All transactions use modern <strong>SSL/TLS encryption</strong> so your data is fully protected.</p>
+        <p>We never store sensitive card details on our servers. Independent audits and 2-factor authentication add an extra layer of protection. We use tokenization so card numbers never touch our servers. Our payment partner maintains PCI DSS Level 1 compliance and performs routine security scans and penetration tests.</p>
+        <p>If you prefer, you can also donate via a verified payment link provider (PayPal / Stripe Payment Links). Receipts and donation confirmations are emailed automatically to donors for transparency.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>They Wrote About Us</summary>
+      <div>
+        <p><em>Animal World Weekly:</em> “A shining example of how compassion can change lives.”</p>
+        <p><em>Global Pet Journal:</em> “Their dedication to rescue missions sets a new gold standard.”p></p>
+        <p><em>Wildlife Today Magazine:</em> “From shelters to sanctuaries, this group delivers real results.”</p>
+        <p><em>Happy Paws Gazette:</em> “Donations here directly transform the daily lives of animals.”</p>
+      </div>
+    </details>
+
+    <div id="notice" class="notice" role="alert"></div>
+
+    <!-- Share links with colored icons (Facebook fixed to brand blue) -->
+    <div class="share" aria-label="Share this page">
+      <span>Share ❤️:</span>
+
+      <!-- Facebook (inline SVG colored with official blue) -->
+      <a id="share-fb" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="false" role="img" focusable="false">
+          <path fill="#1877F2" d="M22 12.07C22 6.48 17.52 2 11.93 2S2 6.48 2 12.07C2 17.09 5.66 21.27 10.44 22v-7.03H7.9v-2.9h2.54V9.41c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.62.77-1.62 1.56v1.87h2.77l-.44 2.9h-2.33V22C18.34 21.27 22 17.09 22 12.07z"/>
+        </svg>
+        Facebook
+      </a>
+
+      <!-- X / Twitter (black) -->
+      <a id="share-x" target="_blank" rel="noopener noreferrer" aria-label="Share on X">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="false" role="img" focusable="false">
+          <path fill="#000" d="M22 5.92c-.66.29-1.38.48-2.13.57.77-.46 1.35-1.18 1.62-2.04-.72.43-1.52.74-2.37.91C18.64 4.3 17.74 4 16.77 4c-1.57 0-2.85 1.3-2.85 2.9 0 .23.02.45.07.66-2.37-.12-4.48-1.33-5.89-3.16-.25.43-.39.93-.39 1.47 0 1.01.51 1.9 1.28 2.42-.6-.02-1.17-.19-1.66-.46v.05c0 1.41 1.01 2.58 2.35 2.85-.24.06-.49.09-.75.09-.18 0-.36-.02-.53-.05.36 1.14 1.41 1.97 2.65 1.99C8.5 16.6 7.28 17.16 5.97 17.16c-.38 0-.75-.02-1.11-.07C4.45 18 5.73 18.75 7.21 18.75c2.76 0 4.28-1.59 5.02-2.92 1.02.16 2.01.06 2.99-.28-.29-.86-.9-1.58-1.7-2.04.92-.11 1.8-.38 2.6-.83z"/>
+        </svg>
+        X
+      </a>
+
+      <!-- Instagram (PNG/gradient image kept as-is) -->
+      <a id="share-ig" target="_blank" rel="noopener noreferrer" aria-label="Share on Instagram">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" width="20" height="20" style="border-radius:4px;">
+        Instagram
+      </a>
+
+      <!-- Email (Gmail icon) -->
+      <a id="share-mail" target="_blank" rel="noopener noreferrer" aria-label="Share via Email">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Gmail_Icon.png" alt="Email" width="20" height="20" style="border-radius:4px;">
+        Email
+      </a>
+    </div>
+
+    <div class="qr-container">
+      <span>Or scan to visit:</span>
+      <div id="qrcode"></div>
+    </div>
 
     <div class="footer">© 2025 Animal Shelter Support Campaign. All rights reserved.</div>
   </main>
 
   <script>
-    const audio = document.getElementById('bg-audio');
-    const muteBtn = document.getElementById('mute-toggle');
+    /***************************************************************
+     * Payment note:
+     * - Keeps using your existing /api/create-checkout-session endpoint.
+     * - If it's missing, set FALLBACK_PAYMENT_LINK to a Stripe Payment Link or PayPal URL.
+     ***************************************************************/
+    const FALLBACK_PAYMENT_LINK = ""; // optional fallback, e.g. "https://buy.stripe.com/xyz" or "https://paypal.me/you"
+    const stripe = Stripe("pk_live_51S0zyXDyLtejYlZixEqmlIwnOSQ4yxGGvR2i5eulXNtmKnpeAIgXETXm3FNm8E4XSgeSnyeWboG5CHWJnLccnagx004MPoq1n1");
 
-    let fading = null;
-
-    function fadeTo(targetVolume, duration) {
-      if (fading) clearInterval(fading);
-      const step = 0.05;
-      fading = setInterval(() => {
-        if (Math.abs(audio.volume - targetVolume) < step) {
-          audio.volume = targetVolume;
-          clearInterval(fading);
-        } else {
-          audio.volume += (audio.volume < targetVolume ? step : -step);
-        }
-      }, duration * step);
+    function showNotice(msg){
+      const n = document.getElementById('notice');
+      if(!n) return;
+      n.style.display = 'block';
+      n.textContent = msg;
     }
 
-    // indulás: autoplay + fade-in
-    audio.volume = 0;
-    audio.loop = false;
-    audio.play().then(() => fadeTo(1, 2000)).catch(()=>{});
+    async function donate(amount){
+      toggleButtons(true);
+      try{
+        const resp = await fetch("/api/create-checkout-session", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({ amount: Number(amount) })
+        });
+        if(resp.ok){
+          const data = await resp.json();
+          if(data && data.id){
+            await stripe.redirectToCheckout({ sessionId: data.id });
+            return;
+          }
+        }
 
-    // ha vége, fade-out, majd újraindul
-    audio.addEventListener("timeupdate", () => {
-      if (audio.duration && audio.currentTime > audio.duration - 3) {
-        fadeTo(0, 2000);
+        if(FALLBACK_PAYMENT_LINK){
+          let url = FALLBACK_PAYMENT_LINK.includes("{AMOUNT}")
+            ? FALLBACK_PAYMENT_LINK.replace("{AMOUNT}", encodeURIComponent(amount))
+            : FALLBACK_PAYMENT_LINK + (FALLBACK_PAYMENT_LINK.includes('?') ? '&' : '?') + 'amount=' + encodeURIComponent(amount);
+          window.location.href = url;
+          return;
+        }
+
+        showNotice("Payment session error. Please try again later.");
+      }catch(err){
+        console.error(err);
+        showNotice("Payment request failed.");
+      } finally { toggleButtons(false); }
+    }
+
+    function donateCustom(){
+      const v = Number(document.getElementById('customAmount').value);
+      if(!v || v < 1){ alert('Please enter a valid amount (minimum 1 €).'); return; }
+      donate(v);
+    }
+
+    function toggleButtons(disabled){
+      document.querySelectorAll('.btn').forEach(b=> b.disabled = disabled);
+    }
+
+    (function initShare(){
+      const url = encodeURIComponent("https://help-animal-ruby.vercel.app/");
+      const text = encodeURIComponent("Support animal shelters and help pets in need.");
+      document.getElementById('share-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+      document.getElementById('share-x').href = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+      document.getElementById('share-ig').href = `https://www.instagram.com/?url=${url}`;
+      document.getElementById('share-mail').href = `mailto:?subject=Support%20Animals&body=${text}%0A${url}`;
+    })();
+
+    /* small stat animation (cosmetic) */
+    function animateId(id, endVal){
+      const el = document.getElementById(id);
+      if(!el) return;
+      const start = Number(el.textContent.replace(/[^0-9]/g,'')) || 0;
+      const dur = 700; const s = performance.now();
+      requestAnimationFrame(function fn(t){
+        const p = Math.min(1,(t-s)/dur);
+        el.textContent = Math.round(start + (endVal-start)*p).toLocaleString();
+        if(p<1) requestAnimationFrame(fn);
+      });
+    }
+    animateId('donors',12500); animateId('projects',37); animateId('animals',4357);
+
+    /* FLAG fallback helper: replace broken <img> with emoji inside same <a> */
+    function flagFallback(img, emoji){
+      try{
+        const a = img.parentNode;
+        const span = document.createElement('span');
+        span.className = 'flag-emoji';
+        span.textContent = emoji;
+        span.setAttribute('role','img');
+        span.setAttribute('aria-label', img.alt || '');
+        a.replaceChild(span, img);
+      }catch(e){ console.warn("flagFallback failed", e); }
+    }
+
+    // Generate QR code
+    QRCode.toCanvas(document.createElement('canvas'), "https://help-animal-ruby.vercel.app/", function (err, canvas) {
+      if (!err) {
+        document.getElementById('qrcode').appendChild(canvas);
       }
     });
-    audio.addEventListener("ended", () => {
-      audio.currentTime = 0;
-      audio.play();
-      fadeTo(1, 2000);
-    });
+  </script>
 
-    // hangszóró ikon
-    muteBtn.addEventListener('click', () => {
-      audio.muted = !audio.muted;
-      muteBtn.textContent = audio.muted ? '🔇' : '🔊';
-    });
+  <!-- ADDED: smooth loop + fade logic for the background audio (keeps user experience smooth on loop) -->
+  <script>
+    (function smoothAudioLoop(){
+      const audio = document.getElementById('bg-audio');
+      if(!audio) return;
+
+      // We'll handle the loop manually so we can fade out before the end,
+      // jump to start and fade in — avoiding a noticeable click/pop.
+      const fadeSeconds = 3.0; // seconds to fade out/in
+      const pollInterval = 60; // ms for the fade steps
+      let isFading = false;
+
+      // ensure a sensible initial volume
+      audio.volume = 1.0;
+
+      // Try to autoplay; if blocked, show a small unobtrusive play button
+      const tryPlay = audio.play();
+      if (tryPlay !== undefined) {
+        tryPlay.catch(() => {
+          const btn = document.createElement('button');
+          btn.id = 'play-audio-btn';
+          btn.textContent = 'Play site audio';
+          Object.assign(btn.style, {
+            position: 'fixed',
+            right: '12px',
+            bottom: '12px',
+            zIndex: '9999',
+            padding: '10px 12px',
+            borderRadius: '8px',
+            border: '1px solid rgba(0,0,0,0.08)',
+            background: 'rgba(255,255,255,0.95)',
+            cursor: 'pointer',
+            fontWeight: '700'
+          });
+          btn.addEventListener('click', function(){
+            audio.play().catch(()=>{});
+            btn.remove();
+          });
+          document.body.appendChild(btn);
+        });
+      }
+
+      function fadeOutAndRestart(){
+        isFading = true;
+        const totalSteps = Math.max(6, Math.round((fadeSeconds*1000)/pollInterval));
+        let step = 0;
+        const startVol = audio.volume;
+        const outInterval = setInterval(()=>{
+          step++;
+          const t = step / totalSteps;
+          audio.volume = Math.max(0, startVol * (1 - t));
+          if(step >= totalSteps){
+            clearInterval(outInterval);
+            // jump to start and fade in
+            audio.pause();
+            audio.currentTime = 0;
+            audio.volume = 0;
+            // try to play again (should be allowed if user previously interacted)
+            audio.play().catch(()=>{ /* if still blocked, user will need to click the play button */ });
+            // fade in
+            let stepIn = 0;
+            const inInterval = setInterval(()=>{
+              stepIn++;
+              const tt = stepIn / totalSteps;
+              audio.volume = Math.min(1, tt);
+              if(stepIn >= totalSteps){
+                clearInterval(inInterval);
+                isFading = false;
+              }
+            }, pollInterval);
+          }
+        }, pollInterval);
+      }
+
+      audio.addEventListener('timeupdate', function(){
+        if(!audio.duration || isFading) return;
+        // start fade a little earlier than the last fadeSeconds so transition is smooth
+        if(audio.currentTime >= audio.duration - fadeSeconds - 0.05){
+          fadeOutAndRestart();
+        }
+      });
+
+      // in case 'ended' fires, fallback to restart
+      audio.addEventListener('ended', function(){
+        if(!isFading){
+          audio.currentTime = 0;
+          audio.play().catch(()=>{});
+        }
+      });
+    })();
   </script>
 </body>
 </html>
